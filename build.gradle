@@ -1,0 +1,47 @@
+plugins {
+    id 'java'
+}
+
+group 'com.arthenica.smart.exception'
+version = '0.1.0'
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+jar {
+    buildDir = 'target'
+    manifest {
+        attributes(
+                'Built-By': System.getProperty('user.name'),
+                'Build-Jdk': System.getProperty('java.version')
+        )
+    }
+}
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed"
+        showExceptions true
+        showCauses true
+        showStackTraces true
+        afterSuite { desc, result ->
+            if (!desc.parent) {
+                def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} passed, ${result.failedTestCount} failed, ${result.skippedTestCount} skipped)"
+                def startItem = '|  ', endItem = '  |'
+                def repeatLength = startItem.length() + output.length() + endItem.length()
+                println('\n' + ('-' * repeatLength) + '\n' + startItem + output + endItem + '\n' + ('-' * repeatLength))
+            }
+        }
+    }
+}
+
+dependencies {
+    testImplementation 'org.mockito:mockito-core:3.3.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.1'
+    testImplementation 'org.slf4j:slf4j-api:1.7.30'
+    testImplementation 'ch.qos.logback:logback-classic:1.2.3'
+}
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
