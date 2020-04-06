@@ -54,17 +54,17 @@ public class Exceptions {
     /**
      * <p>Stores global group package names.
      */
-    protected static final Set<String> groupedPackageSet = Collections.synchronizedSet(new HashSet<>());
+    protected static final Set<String> groupPackageSet = Collections.synchronizedSet(new HashSet<>());
 
     /**
      * <p>Stores global ignore package names.
      */
-    protected static final Set<String> ignoredPackageSet = Collections.synchronizedSet(new HashSet<>());
+    protected static final Set<String> ignorePackageSet = Collections.synchronizedSet(new HashSet<>());
 
     /**
-     * <p>Stores global ignored cause package names.
+     * <p>Stores global ignore cause package names.
      */
-    protected static final Set<String> ignoredCausePackageSet = Collections.synchronizedSet(new HashSet<>());
+    protected static final Set<String> ignoreCausePackageSet = Collections.synchronizedSet(new HashSet<>());
 
     /**
      * <p>Registers a new root package.
@@ -76,24 +76,24 @@ public class Exceptions {
     }
 
     /**
-     * <p>Registers a new grouped package.
+     * <p>Registers a new group package.
      *
-     * @param packageString grouped package name to register
+     * @param packageString group package name to register
      */
-    public static void registerGroupedPackage(final String packageString) {
-        groupedPackageSet.add(packageString);
+    public static void registerGroupPackage(final String packageString) {
+        groupPackageSet.add(packageString);
     }
 
     /**
-     * <p>Registers a new ignored package.
+     * <p>Registers a new ignore package.
      *
-     * @param packageString      ignored package name to register
+     * @param packageString      ignore package name to register
      * @param ignoreCauseClasses ignore cause classes from this package too
      */
-    public static void registerIgnoredPackage(final String packageString, final boolean ignoreCauseClasses) {
-        ignoredPackageSet.add(packageString);
+    public static void registerIgnorePackage(final String packageString, final boolean ignoreCauseClasses) {
+        ignorePackageSet.add(packageString);
         if (ignoreCauseClasses) {
-            ignoredCausePackageSet.add(packageString);
+            ignoreCausePackageSet.add(packageString);
         }
     }
 
@@ -105,44 +105,44 @@ public class Exceptions {
     }
 
     /**
-     * <p>Clears previously registered grouped packages.
+     * <p>Clears previously registered group packages.
      */
-    public static void clearGroupedPackages() {
-        groupedPackageSet.clear();
+    public static void clearGroupPackages() {
+        groupPackageSet.clear();
     }
 
     /**
-     * <p>Clears previously registered ignored packages.
+     * <p>Clears previously registered ignore packages.
      */
-    public static void clearIgnoredPackages() {
-        ignoredPackageSet.clear();
-        ignoredCausePackageSet.clear();
+    public static void clearIgnorePackages() {
+        ignorePackageSet.clear();
+        ignoreCausePackageSet.clear();
     }
 
     /**
      * <p>Returns the smart stack trace for the given <code>throwable</code>.
      *
-     * <p>This method uses root packages registered by {@link #registerRootPackage(String)} and ignored packages
-     * registered by {@link #registerIgnoredPackage(String, boolean)} to build the smart stack trace.
+     * <p>This method uses root packages registered by {@link #registerRootPackage(String)} and ignore packages
+     * registered by {@link #registerIgnorePackage(String, boolean)} to build the smart stack trace.
      *
      * @param throwable parent throwable
      * @return a string containing the smart stack trace for the given <code>throwable</code>
      */
     public static String getStackTraceString(final Throwable throwable) {
-        return getStackTraceString(throwable, false, rootPackageSet, groupedPackageSet, ignoredPackageSet, 0);
+        return getStackTraceString(throwable, false, rootPackageSet, groupPackageSet, ignorePackageSet, 0);
     }
 
     /**
      * <p>Returns the smart stack trace for the given <code>throwable</code> using packages provided.
      *
-     * @param throwable         parent throwable
-     * @param rootPackageSet    root packages to use for building the stack trace
-     * @param groupedPackageSet grouped packages to use for building the stack trace
-     * @param ignoredPackageSet ignored packages to use for building the stack trace
+     * @param throwable        parent throwable
+     * @param rootPackageSet   root packages to use for building the stack trace
+     * @param groupPackageSet  group packages to use for building the stack trace
+     * @param ignorePackageSet ignore packages to use for building the stack trace
      * @return a string containing the smart stack trace for the given <code>throwable</code>
      */
-    public static String getStackTraceString(final Throwable throwable, final Set<String> rootPackageSet, final Set<String> groupedPackageSet, final Set<String> ignoredPackageSet) {
-        return getStackTraceString(throwable, false, rootPackageSet, groupedPackageSet, ignoredPackageSet, 0);
+    public static String getStackTraceString(final Throwable throwable, final Set<String> rootPackageSet, final Set<String> groupPackageSet, final Set<String> ignorePackageSet) {
+        return getStackTraceString(throwable, false, rootPackageSet, groupPackageSet, ignorePackageSet, 0);
     }
 
     /**
@@ -159,13 +159,13 @@ public class Exceptions {
     /**
      * <p>Returns the smart stack trace for the given <code>throwable</code> using root package provided.
      *
-     * @param throwable      parent throwable
-     * @param rootPackage    root package to use for building the stack trace
-     * @param groupedPackage grouped package to use for building the stack trace
+     * @param throwable    parent throwable
+     * @param rootPackage  root package to use for building the stack trace
+     * @param groupPackage group package to use for building the stack trace
      * @return a string containing the smart stack trace for the given <code>throwable</code>
      */
-    public static String getStackTraceString(final Throwable throwable, final String rootPackage, final String groupedPackage) {
-        return getStackTraceString(throwable, false, Collections.singleton(rootPackage), Collections.singleton(groupedPackage), Collections.emptySet(), 0);
+    public static String getStackTraceString(final Throwable throwable, final String rootPackage, final String groupPackage) {
+        return getStackTraceString(throwable, false, Collections.singleton(rootPackage), Collections.singleton(groupPackage), Collections.emptySet(), 0);
     }
 
     /**
@@ -182,15 +182,15 @@ public class Exceptions {
     /**
      * <p>Returns the smart stack trace for the given <code>throwable</code> using packages and maxDepth provided.
      *
-     * @param throwable         parent throwable
-     * @param isCause           throwable is a cause or not
-     * @param rootPackageSet    root packages to use for building the stack trace
-     * @param groupedPackageSet grouped packages to use for building the stack trace
-     * @param ignoredPackageSet ignored packages to use for building the stack trace
-     * @param maxDepth          max depth in exception chain that will be used
+     * @param throwable        parent throwable
+     * @param isCause          throwable is a cause or not
+     * @param rootPackageSet   root packages to use for building the stack trace
+     * @param groupPackageSet  group packages to use for building the stack trace
+     * @param ignorePackageSet ignore packages to use for building the stack trace
+     * @param maxDepth         max depth in exception chain that will be used
      * @return a string containing the smart stack trace for the given <code>throwable</code>
      */
-    protected static String getStackTraceString(final Throwable throwable, final boolean isCause, final Set<String> rootPackageSet, final Set<String> groupedPackageSet, final Set<String> ignoredPackageSet, final int maxDepth) {
+    protected static String getStackTraceString(final Throwable throwable, final boolean isCause, final Set<String> rootPackageSet, final Set<String> groupPackageSet, final Set<String> ignorePackageSet, final int maxDepth) {
         final StringBuilder builder = new StringBuilder();
 
         if (throwable == null) {
@@ -203,7 +203,7 @@ public class Exceptions {
         if (maxDepth > 0) {
             stackTraceElements = getStackTrace(throwable, maxDepth);
         } else {
-            stackTraceElements = getStackTrace(throwable, rootPackageSet, ignoredPackageSet);
+            stackTraceElements = getStackTrace(throwable, rootPackageSet, ignorePackageSet);
         }
         String message = throwable.getLocalizedMessage();
         if (isEmpty(message)) {
@@ -229,42 +229,42 @@ public class Exceptions {
         }
 
         /* PRINT SHORT STACK TRACE */
-        String currentGroupedPackage = null;
+        String currentGroupPackage = null;
         StackTraceElement firstStackTraceElementInTheGroup = null;
         int currentGroupCount = 0;
         for (StackTraceElement traceElement : stackTraceElements) {
             String traceElementClassName = traceElement.getClassName();
-            String groupedPackageMatch = getContainingPackage(traceElementClassName, groupedPackageSet);
+            String groupPackageMatch = getContainingPackage(traceElementClassName, groupPackageSet);
 
-            if (groupedPackageMatch != null) {
-                if (!groupedPackageMatch.equals(currentGroupedPackage)) {
-                    appendStackTraceGroupElement(builder, currentGroupedPackage, currentGroupCount, firstStackTraceElementInTheGroup);
+            if (groupPackageMatch != null) {
+                if (!groupPackageMatch.equals(currentGroupPackage)) {
+                    appendStackTraceGroupElement(builder, currentGroupPackage, currentGroupCount, firstStackTraceElementInTheGroup);
 
                     builder.append(System.lineSeparator());
                     builder.append("\tat ");
 
-                    currentGroupedPackage = groupedPackageMatch;
+                    currentGroupPackage = groupPackageMatch;
                     firstStackTraceElementInTheGroup = traceElement;
                     currentGroupCount = 1;
                 } else {
                     currentGroupCount++;
                 }
             } else {
-                currentGroupCount = appendStackTraceGroupElement(builder, currentGroupedPackage, currentGroupCount, firstStackTraceElementInTheGroup);
+                currentGroupCount = appendStackTraceGroupElement(builder, currentGroupPackage, currentGroupCount, firstStackTraceElementInTheGroup);
 
                 builder.append(System.lineSeparator());
                 builder.append("\tat ");
                 builder.append(traceElement);
-                currentGroupedPackage = null;
+                currentGroupPackage = null;
             }
         }
 
-        appendStackTraceGroupElement(builder, currentGroupedPackage, currentGroupCount, firstStackTraceElementInTheGroup);
+        appendStackTraceGroupElement(builder, currentGroupPackage, currentGroupCount, firstStackTraceElementInTheGroup);
 
         /* WE ARE INTERESTED IN CAUSE TOO */
         final Throwable cause = throwable.getCause();
-        if (cause != null && !containsPackage(className, ignoredCausePackageSet)) {
-            builder.append(getStackTraceString(cause, true, rootPackageSet, groupedPackageSet, ignoredPackageSet, maxDepth));
+        if (cause != null && !containsPackage(className, ignoreCausePackageSet)) {
+            builder.append(getStackTraceString(cause, true, rootPackageSet, groupPackageSet, ignorePackageSet, maxDepth));
         }
 
         return builder.toString();
@@ -274,14 +274,14 @@ public class Exceptions {
      * <p>Appends stack trace group information for the given parameters.
      *
      * @param stringBuilder                     string builder that group stack trace information will be appended
-     * @param currentGroupedPackage             package name of the current group
+     * @param currentGroupPackage               package name of the current group
      * @param numberOfElementsInTheCurrentGroup number of elements in the current group
      * @param firstStackTraceElementInTheGroup  first stack trace element of this group
      * @return new value for the group element count
      */
-    protected static int appendStackTraceGroupElement(final StringBuilder stringBuilder, final String currentGroupedPackage, final int numberOfElementsInTheCurrentGroup, final StackTraceElement firstStackTraceElementInTheGroup) {
+    protected static int appendStackTraceGroupElement(final StringBuilder stringBuilder, final String currentGroupPackage, final int numberOfElementsInTheCurrentGroup, final StackTraceElement firstStackTraceElementInTheGroup) {
         if (numberOfElementsInTheCurrentGroup > 0) {
-            stringBuilder.append((numberOfElementsInTheCurrentGroup == 1) ? firstStackTraceElementInTheGroup.toString() : String.format("%s ... %d more", currentGroupedPackage, (numberOfElementsInTheCurrentGroup - 1)));
+            stringBuilder.append((numberOfElementsInTheCurrentGroup == 1) ? firstStackTraceElementInTheGroup.toString() : String.format("%s ... %d more", currentGroupPackage, (numberOfElementsInTheCurrentGroup - 1)));
         }
 
         return 0;
@@ -376,12 +376,12 @@ public class Exceptions {
      * <p>Builds a smart stack trace for the given <code>throwable</code> using packages provided and returns elements
      * of it.
      *
-     * @param throwable         parent throwable
-     * @param rootPackageSet    root packages to use for building the stack trace
-     * @param ignoredPackageSet ignored packages to use for building the stack trace
+     * @param throwable        parent throwable
+     * @param rootPackageSet   root packages to use for building the stack trace
+     * @param ignorePackageSet ignore packages to use for building the stack trace
      * @return an array containing stack trace elements
      */
-    protected static StackTraceElement[] getStackTrace(final Throwable throwable, final Set<String> rootPackageSet, final Set<String> ignoredPackageSet) {
+    protected static StackTraceElement[] getStackTrace(final Throwable throwable, final Set<String> rootPackageSet, final Set<String> ignorePackageSet) {
         final ArrayList<StackTraceElement> list = new ArrayList<>();
         final ArrayList<StackTraceElement> partialList = new ArrayList<>();
 
@@ -393,7 +393,7 @@ public class Exceptions {
                             if (containsPackage(className, rootPackageSet)) {
                                 list.addAll(partialList);
                                 list.add(stackTraceElement);
-                            } else if (!containsPackage(className, ignoredPackageSet)) {
+                            } else if (!containsPackage(className, ignorePackageSet)) {
                                 partialList.add(stackTraceElement);
                             }
                         }

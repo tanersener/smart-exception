@@ -57,7 +57,7 @@ public class ExceptionsTest {
 
         try {
             Exceptions.registerRootPackage("com.arthenica");
-            Exceptions.registerIgnoredPackage("java.util", false);
+            Exceptions.registerIgnorePackage("java.util", false);
 
             Callable<String> stringCallable = () -> {
                 throw level1Exception;
@@ -77,12 +77,12 @@ public class ExceptionsTest {
             Assertions.assertEquals(expectedStackTrace, Exceptions.getStackTraceString(e));
         } finally {
             Exceptions.clearRootPackages();
-            Exceptions.clearIgnoredPackages();
+            Exceptions.clearIgnorePackages();
         }
 
         try {
             Exceptions.registerRootPackage("com.arthenica");
-            Exceptions.registerIgnoredPackage("java.util", true);
+            Exceptions.registerIgnorePackage("java.util", true);
 
             Callable<String> stringCallable = () -> {
                 throw level1Exception;
@@ -100,7 +100,7 @@ public class ExceptionsTest {
             Assertions.assertEquals(expectedStackTrace, Exceptions.getStackTraceString(e));
         } finally {
             Exceptions.clearRootPackages();
-            Exceptions.clearIgnoredPackages();
+            Exceptions.clearIgnorePackages();
         }
     }
 
@@ -178,7 +178,7 @@ public class ExceptionsTest {
     }
 
     @Test
-    public void getStackTraceWithRootPackageAndGroupedPackage() {
+    public void getStackTraceWithRootPackageAndGroupPackage() {
         try {
             Integer.parseInt("ABC");
         } catch (NumberFormatException e) {
@@ -187,7 +187,7 @@ public class ExceptionsTest {
                     "\tat java.lang.NumberFormatException.forInputString(NumberFormatException.java:65)\n" +
                     "\tat java.lang.Integer.parseInt(Integer.java:580)\n" +
                     "\tat java.lang.Integer.parseInt(Integer.java:615)\n" +
-                    "\tat com.arthenica.smartexception.ExceptionsTest.getStackTraceWithRootPackageAndGroupedPackage(ExceptionsTest.java:183)\n" +
+                    "\tat com.arthenica.smartexception.ExceptionsTest.getStackTraceWithRootPackageAndGroupPackage(ExceptionsTest.java:183)\n" +
                     "\tat sun.reflect ... 2 more\n" +
                     "\tat java.lang.reflect.Method.invoke(Method.java:498)\n" +
                     "\tat org.junit ... 26 more\n" +
