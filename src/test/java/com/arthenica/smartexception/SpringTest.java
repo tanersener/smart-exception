@@ -64,11 +64,11 @@ public class SpringTest {
             String expectedStackTrace = "\n" +
                     "org.springframework.web.util.NestedServletException: Request processing failed; nested exception is java.lang.StringIndexOutOfBoundsException: Invalid index.\n" +
                     "\tat org.springframework ... 6 more\n" +
-                    "\tat com.arthenica.smartexception.SpringTest.getUserTest(SpringTest.java:65)\n" +
+                    "\tat com.arthenica.smartexception.SpringTest.getUserTest(SpringTest.java:62)\n" +
                     "Caused by: java.lang.StringIndexOutOfBoundsException: Invalid index.\n" +
                     "\tat com.arthenica.smartexception.spring.RestController.getUsers(RestController.java:46)\n" +
                     "\tat org.springframework ... 14 more\n" +
-                    "\tat com.arthenica.smartexception.SpringTest.getUserTest(SpringTest.java:65)";
+                    "\tat com.arthenica.smartexception.SpringTest.getUserTest(SpringTest.java:62)";
 
             Assertions.assertEquals(expectedStackTrace, Exceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), Collections.singleton("org.springframework"), new HashSet<>(Arrays.asList("sun.net", "sun.security", "sun.reflect", "java.lang.reflect", "javax.servlet.http"))));
         }
