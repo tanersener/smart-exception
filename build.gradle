@@ -36,6 +36,8 @@ test {
 }
 
 dependencies {
+    testImplementation 'org.apache.cxf:cxf-rt-rs-client:3.3.6'
+    testImplementation 'org.apache.cxf:cxf-rt-transports-http-hc:3.3.6'
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.2.6.RELEASE'
     testImplementation 'org.springframework.boot:spring-boot-starter-web:2.2.6.RELEASE'
     testImplementation 'org.mockito:mockito-core:3.3.3'
