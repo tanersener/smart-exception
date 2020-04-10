@@ -69,7 +69,7 @@ public class ApacheCxfTest {
                     "\tat org.apache.cxf ... 18 more\n" +
                     "\tat com.arthenica.smartexception.ApacheCxfTest.access(ApacheCxfTest.java:56)";
 
-            Assertions.assertEquals(expectedStackTrace, Exceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), new HashSet<>(Arrays.asList("org.apache.cxf", "java.net", "java.security")), new HashSet<>(Arrays.asList("sun.net", "sun.reflect", "java.lang.reflect"))));
+            Assertions.assertEquals(expectedStackTrace, AbstractExceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), new HashSet<>(Arrays.asList("org.apache.cxf", "java.net", "java.security")), new HashSet<>(Arrays.asList("sun.net", "sun.reflect", "java.lang.reflect"))));
         }
     }
 

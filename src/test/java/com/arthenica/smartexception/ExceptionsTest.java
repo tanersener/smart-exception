@@ -56,8 +56,8 @@ public class ExceptionsTest {
         Exception level1Exception = new MBeanException(level2Exception);
 
         try {
-            Exceptions.registerRootPackage("com.arthenica");
-            Exceptions.registerIgnorePackage("java.util", false);
+            AbstractExceptions.registerRootPackage("com.arthenica");
+            AbstractExceptions.registerIgnorePackage("java.util", false);
 
             Callable<String> stringCallable = () -> {
                 throw level1Exception;
@@ -74,15 +74,15 @@ public class ExceptionsTest {
                     "Caused by: java.lang.ArrayIndexOutOfBoundsException: Index not valid.\n" +
                     "\tat com.arthenica.smartexception.ExceptionsTest.getStackTrace(ExceptionsTest.java:53)";
 
-            Assertions.assertEquals(expectedStackTrace, Exceptions.getStackTraceString(e));
+            Assertions.assertEquals(expectedStackTrace, AbstractExceptions.getStackTraceString(e));
         } finally {
-            Exceptions.clearRootPackages();
-            Exceptions.clearIgnorePackages();
+            AbstractExceptions.clearRootPackages();
+            AbstractExceptions.clearIgnorePackages();
         }
 
         try {
-            Exceptions.registerRootPackage("com.arthenica");
-            Exceptions.registerIgnorePackage("java.util", true);
+            AbstractExceptions.registerRootPackage("com.arthenica");
+            AbstractExceptions.registerIgnorePackage("java.util", true);
 
             Callable<String> stringCallable = () -> {
                 throw level1Exception;
@@ -97,10 +97,10 @@ public class ExceptionsTest {
                     "Caused by: java.util.ConcurrentModificationException: java.lang.ArrayIndexOutOfBoundsException: Index not valid.\n" +
                     "\tat com.arthenica.smartexception.ExceptionsTest.getStackTrace(ExceptionsTest.java:54)";
 
-            Assertions.assertEquals(expectedStackTrace, Exceptions.getStackTraceString(e));
+            Assertions.assertEquals(expectedStackTrace, AbstractExceptions.getStackTraceString(e));
         } finally {
-            Exceptions.clearRootPackages();
-            Exceptions.clearIgnorePackages();
+            AbstractExceptions.clearRootPackages();
+            AbstractExceptions.clearIgnorePackages();
         }
     }
 
@@ -127,7 +127,7 @@ public class ExceptionsTest {
                     "Caused by: java.lang.ArrayIndexOutOfBoundsException: Index not valid.\n" +
                     "\tat com.arthenica.smartexception.ExceptionsTest.getStackTraceWithPackages(ExceptionsTest.java:109)";
 
-            Assertions.assertEquals(expectedStackTrace, Exceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), Collections.emptySet(), Collections.emptySet()));
+            Assertions.assertEquals(expectedStackTrace, AbstractExceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), Collections.emptySet(), Collections.emptySet()));
         }
 
         try {
@@ -146,7 +146,7 @@ public class ExceptionsTest {
                     "Caused by: java.lang.ArrayIndexOutOfBoundsException: Index not valid.\n" +
                     "\tat com.arthenica.smartexception.ExceptionsTest.getStackTraceWithPackages(ExceptionsTest.java:109)";
 
-            Assertions.assertEquals(expectedStackTrace, Exceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), Collections.emptySet(), Collections.emptySet()));
+            Assertions.assertEquals(expectedStackTrace, AbstractExceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), Collections.emptySet(), Collections.emptySet()));
         }
     }
 
@@ -173,7 +173,7 @@ public class ExceptionsTest {
                     "Caused by: java.lang.ArrayIndexOutOfBoundsException: Index not valid.\n" +
                     "\tat com.arthenica.smartexception.ExceptionsTest.getStackTraceWithRootPackage(ExceptionsTest.java:155)";
 
-            Assertions.assertEquals(expectedStackTrace, Exceptions.getStackTraceString(e, "com.arthenica"));
+            Assertions.assertEquals(expectedStackTrace, AbstractExceptions.getStackTraceString(e, "com.arthenica"));
         }
     }
 
@@ -209,7 +209,7 @@ public class ExceptionsTest {
                     "\tat org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run(ThreadFactoryImpl.java:56)\n" +
                     "\tat java.lang.Thread.run(Thread.java:748)";
 
-            Assertions.assertEquals(expectedStackTrace, Exceptions.getStackTraceString(e, Collections.emptySet(), new HashSet<>(Arrays.asList("org.junit", "sun.reflect", "org.gradle")), Collections.emptySet()));
+            Assertions.assertEquals(expectedStackTrace, AbstractExceptions.getStackTraceString(e, Collections.emptySet(), new HashSet<>(Arrays.asList("org.junit", "sun.reflect", "org.gradle")), Collections.emptySet()));
         }
     }
 
@@ -240,7 +240,7 @@ public class ExceptionsTest {
                     "\tat com.arthenica.smartexception.ExceptionsTest.getStackTraceWithMaxDepth(ExceptionsTest.java:218)\n" +
                     "\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)";
 
-            Assertions.assertEquals(expectedStackTrace, Exceptions.getStackTraceString(e, 2));
+            Assertions.assertEquals(expectedStackTrace, AbstractExceptions.getStackTraceString(e, 2));
         }
     }
 
@@ -255,7 +255,7 @@ public class ExceptionsTest {
             };
             stringCallable.call();
         } catch (Exception e) {
-            Assertions.assertEquals("Bean creation failed.\n - Caused by: Invalid running state.", Exceptions.getAllMessages(e));
+            Assertions.assertEquals("Bean creation failed.\n - Caused by: Invalid running state.", AbstractExceptions.getAllMessages(e));
         }
     }
 
@@ -266,7 +266,7 @@ public class ExceptionsTest {
         try {
             new FileInputStream(new File(randomFileNumber));
         } catch (FileNotFoundException e) {
-            Assertions.assertTrue(Exceptions.containsCause(e, FileNotFoundException.class));
+            Assertions.assertTrue(AbstractExceptions.containsCause(e, FileNotFoundException.class));
         }
     }
 
@@ -275,7 +275,7 @@ public class ExceptionsTest {
         try {
             Integer.parseInt("ABC");
         } catch (NumberFormatException e) {
-            Assertions.assertTrue(Exceptions.containsCause(e, NumberFormatException.class, "For input string: \"ABC\""));
+            Assertions.assertTrue(AbstractExceptions.containsCause(e, NumberFormatException.class, "For input string: \"ABC\""));
         }
     }
 
@@ -291,7 +291,7 @@ public class ExceptionsTest {
             };
             stringCallable.call();
         } catch (Exception e) {
-            Assertions.assertEquals(level3Exception, Exceptions.getCause(e));
+            Assertions.assertEquals(level3Exception, AbstractExceptions.getCause(e));
         }
     }
 
@@ -308,7 +308,7 @@ public class ExceptionsTest {
             };
             stringCallable.call();
         } catch (Exception e) {
-            Assertions.assertEquals(level3Exception, Exceptions.getCause(e, 2));
+            Assertions.assertEquals(level3Exception, AbstractExceptions.getCause(e, 2));
         }
     }
 
@@ -325,9 +325,9 @@ public class ExceptionsTest {
             };
             stringCallable.call();
         } catch (Exception e) {
-            Assertions.assertNull(Exceptions.searchCause(e, ArrayIndexOutOfBoundsException.class, 2));
-            Assertions.assertNull(Exceptions.searchCause(e, ConcurrentModificationException.class, 1));
-            Assertions.assertNull(Exceptions.searchCause(e, IllegalArgumentException.class, 10));
+            Assertions.assertNull(AbstractExceptions.searchCause(e, ArrayIndexOutOfBoundsException.class, 2));
+            Assertions.assertNull(AbstractExceptions.searchCause(e, ConcurrentModificationException.class, 1));
+            Assertions.assertNull(AbstractExceptions.searchCause(e, IllegalArgumentException.class, 10));
         }
     }
 
@@ -344,9 +344,9 @@ public class ExceptionsTest {
             };
             stringCallable.call();
         } catch (Exception e) {
-            Assertions.assertEquals(level3Exception, Exceptions.searchCause(e, ConcurrentModificationException.class));
-            Assertions.assertEquals(level3Exception, Exceptions.searchCause(e, ConcurrentModificationException.class, "Index not valid."));
-            Assertions.assertNull(Exceptions.searchCause(e, ConcurrentModificationException.class, "I am valid index."));
+            Assertions.assertEquals(level3Exception, AbstractExceptions.searchCause(e, ConcurrentModificationException.class));
+            Assertions.assertEquals(level3Exception, AbstractExceptions.searchCause(e, ConcurrentModificationException.class, "Index not valid."));
+            Assertions.assertNull(AbstractExceptions.searchCause(e, ConcurrentModificationException.class, "I am valid index."));
         }
     }
 
@@ -363,24 +363,24 @@ public class ExceptionsTest {
             };
             stringCallable.call();
         } catch (Exception e) {
-            Assertions.assertNull(Exceptions.searchCause(e, ArrayIndexOutOfBoundsException.class, "Index not valid.", 2));
-            Assertions.assertNull(Exceptions.searchCause(e, ArrayIndexOutOfBoundsException.class, "Index valid.", 3));
-            Assertions.assertEquals(level4Exception, Exceptions.searchCause(e, ArrayIndexOutOfBoundsException.class, "Index not valid.", 3));
+            Assertions.assertNull(AbstractExceptions.searchCause(e, ArrayIndexOutOfBoundsException.class, "Index not valid.", 2));
+            Assertions.assertNull(AbstractExceptions.searchCause(e, ArrayIndexOutOfBoundsException.class, "Index valid.", 3));
+            Assertions.assertEquals(level4Exception, AbstractExceptions.searchCause(e, ArrayIndexOutOfBoundsException.class, "Index not valid.", 3));
         }
     }
 
     @Test
     public void isEmpty() {
-        Assertions.assertTrue(Exceptions.isEmpty(""));
-        Assertions.assertTrue(Exceptions.isEmpty(null));
-        Assertions.assertTrue(Exceptions.isEmpty("  "));
+        Assertions.assertTrue(AbstractExceptions.isEmpty(""));
+        Assertions.assertTrue(AbstractExceptions.isEmpty(null));
+        Assertions.assertTrue(AbstractExceptions.isEmpty("  "));
     }
 
     @Test
     public void packageName() {
-        Assertions.assertEquals("com.arthenica.smartexception", Exceptions.packageName("com.arthenica.smartexception.Exceptions"));
-        Assertions.assertEquals("java.lang", Exceptions.packageName("java.lang.String"));
-        Assertions.assertEquals("", Exceptions.packageName("String"));
+        Assertions.assertEquals("com.arthenica.smartexception", AbstractExceptions.packageName("com.arthenica.smartexception.Exceptions"));
+        Assertions.assertEquals("java.lang", AbstractExceptions.packageName("java.lang.String"));
+        Assertions.assertEquals("", AbstractExceptions.packageName("String"));
     }
 
 }

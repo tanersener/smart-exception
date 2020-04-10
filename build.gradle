@@ -2,19 +2,92 @@ plugins {
     id 'java'
 }
 
-group 'com.arthenica.smart.exception'
+group 'com.arthenica.smartexception'
 version = '0.1.0'
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
 
-jar {
+sourceSets {
+    compatSourceSet {
+        java {
+            srcDir 'src/main/java'
+            exclude 'com/arthenica/smartexception/Exceptions.java'
+        }
+    }
+    sourceSet {
+        java {
+            srcDir 'src/main/java'
+            exclude 'com/arthenica/smartexception/compat/Exceptions.java'
+        }
+    }
+}
+
+task mainJar(type: Jar) {
     buildDir = 'target'
+    sourceCompatibility = '1.9'
+    targetCompatibility = '1.9'
+    from sourceSets.sourceSet.output
     manifest {
         attributes(
                 'Built-By': System.getProperty('user.name'),
+                'Build-Timestamp': new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ").format(new Date()),
+                'Created-By': "Gradle ${gradle.gradleVersion}",
                 'Build-Jdk': System.getProperty('java.version')
         )
     }
+}
+
+task compatJar(type: Jar) {
+    buildDir = 'target'
+    archiveClassifier.set("compat")
+    sourceCompatibility = '1.7'
+    targetCompatibility = '1.7'
+    from sourceSets.compatSourceSet.output
+    manifest {
+        attributes(
+                'Built-By': System.getProperty('user.name'),
+                'Build-Timestamp': new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ").format(new Date()),
+                'Created-By': "Gradle ${gradle.gradleVersion}",
+                'Build-Jdk': System.getProperty('java.version')
+        )
+    }
+}
+
+task mainSourceJar(type: Jar) {
+    buildDir = 'target'
+    archiveClassifier.set("sources")
+    sourceCompatibility = '1.9'
+    targetCompatibility = '1.9'
+    from sourceSets.sourceSet.allJava
+    manifest {
+        attributes(
+                'Built-By': System.getProperty('user.name'),
+                'Build-Timestamp': new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ").format(new Date()),
+                'Created-By': "Gradle ${gradle.gradleVersion}",
+                'Build-Jdk': System.getProperty('java.version')
+        )
+    }
+}
+
+task compatSourceJar(type: Jar) {
+    buildDir = 'target'
+    archiveClassifier.set("compat-sources")
+    sourceCompatibility = '1.7'
+    targetCompatibility = '1.7'
+    from sourceSets.compatSourceSet.allJava
+    manifest {
+        attributes(
+                'Built-By': System.getProperty('user.name'),
+                'Build-Timestamp': new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ").format(new Date()),
+                'Created-By': "Gradle ${gradle.gradleVersion}",
+                'Build-Jdk': System.getProperty('java.version')
+        )
+    }
+}
+
+artifacts {
+    archives mainJar
+    archives compatJar
+    archives mainSourceJar
+    archives compatSourceJar
 }
 
 test {

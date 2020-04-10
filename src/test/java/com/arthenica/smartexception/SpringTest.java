@@ -70,7 +70,7 @@ public class SpringTest {
                     "\tat org.springframework ... 14 more\n" +
                     "\tat com.arthenica.smartexception.SpringTest.getUserTest(SpringTest.java:62)";
 
-            Assertions.assertEquals(expectedStackTrace, Exceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), Collections.singleton("org.springframework"), new HashSet<>(Arrays.asList("sun.net", "sun.security", "sun.reflect", "java.lang.reflect", "javax.servlet.http"))));
+            Assertions.assertEquals(expectedStackTrace, AbstractExceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), Collections.singleton("org.springframework"), new HashSet<>(Arrays.asList("sun.net", "sun.security", "sun.reflect", "java.lang.reflect", "javax.servlet.http"))));
         }
     }
 
@@ -90,7 +90,7 @@ public class SpringTest {
                     "\tat org.springframework ... 14 more\n" +
                     "\tat com.arthenica.smartexception.SpringTest.postUserTest(SpringTest.java:80)";
 
-            Assertions.assertEquals(expectedStackTrace, Exceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), new HashSet<>(Arrays.asList("org.springframework", "sun.net", "sun.security", "sun.reflect", "java.lang.reflect")), Collections.singleton("javax.servlet.http.HttpServlet")));
+            Assertions.assertEquals(expectedStackTrace, AbstractExceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), new HashSet<>(Arrays.asList("org.springframework", "sun.net", "sun.security", "sun.reflect", "java.lang.reflect")), Collections.singleton("javax.servlet.http.HttpServlet")));
         }
     }
 
@@ -108,7 +108,7 @@ public class SpringTest {
                     "\tat org.springframework ... 14 more\n" +
                     "\tat com.arthenica.smartexception.SpringTest.putUserTest(SpringTest.java:100)";
 
-            Assertions.assertEquals(expectedStackTrace, Exceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), Collections.singleton("org.springframework"), new HashSet<>(Arrays.asList("sun.net", "sun.security", "sun.reflect", "java.lang.reflect", "javax.servlet.http"))));
+            Assertions.assertEquals(expectedStackTrace, AbstractExceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), Collections.singleton("org.springframework"), new HashSet<>(Arrays.asList("sun.net", "sun.security", "sun.reflect", "java.lang.reflect", "javax.servlet.http"))));
         }
     }
 

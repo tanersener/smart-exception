@@ -30,36 +30,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.arthenica.smartexception;
+package com.arthenica.smartexception.compat;
+
+import com.arthenica.smartexception.AbstractExceptions;
+import com.arthenica.smartexception.StackTraceElementSerializer;
 
 /**
- * <p>Utility class to handle Throwable objects and stack traces. This implementation uses some language features that
- * are available on Java 9 and later. Please refer to {@link com.arthenica.smartexception.compat.Exceptions} if you are
- * using an older Java version or Android.
+ * <p>Utility class to handle Throwable objects and stack traces. This implementation is compatible with all Java and
+ * Android versions.
  *
  * @author Taner Sener
  */
 public class Exceptions extends AbstractExceptions {
 
-    /**
-     * <p>Default value for ignoring module name when stack trace elements are printed or converted to string.
-     */
-    public static final boolean DEFAULT_IGNORE_MODULE_NAME = false;
-
-    /**
-     * <p>Stores the value of global ignore module name option.
-     */
-    protected static boolean ignoreModuleName = DEFAULT_IGNORE_MODULE_NAME;
-
     static {
         AbstractExceptions.setStackTraceElementSerializer(new StackTraceElementSerializer() {
 
+            @Override
             public String toString(StackTraceElement stackTraceElement) {
                 final StringBuilder stringBuilder = new StringBuilder();
-
-                if (!ignoreModuleName) {
-                    stringBuilder.append(stackTraceElement.getModuleName());
-                }
 
                 stringBuilder.append(stackTraceElement.getClassName());
                 stringBuilder.append(".");
@@ -82,28 +71,6 @@ public class Exceptions extends AbstractExceptions {
                 return stringBuilder.toString();
             }
         });
-    }
-
-    /**
-     * <p>Returns the value of ignore module name option.
-     *
-     * @return the value of global ignore module name option. If value is true then stack trace elements printed or
-     * converted to string will include module name at the beginning of the line. Otherwise module name will be
-     * ignored.
-     */
-    public static boolean getIgnoreModuleName() {
-        return ignoreModuleName;
-    }
-
-    /**
-     * <p>Sets the value of ignore module name option.
-     *
-     * @param ignoreModuleName new global ignore module name option. If value is true then stack trace elements printed
-     *                         or converted to string will include module name at the beginning of the line. Otherwise
-     *                         module name will be ignored.
-     */
-    public static void setIgnoreModuleName(final boolean ignoreModuleName) {
-        Exceptions.ignoreModuleName = ignoreModuleName;
     }
 
 }
