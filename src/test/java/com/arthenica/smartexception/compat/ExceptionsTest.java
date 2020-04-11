@@ -30,8 +30,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.arthenica.smartexception;
+package com.arthenica.smartexception.compat;
 
+import com.arthenica.smartexception.AbstractExceptionsTest;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -64,13 +65,13 @@ public class ExceptionsTest {
         } catch (Exception e) {
             String expectedStackTrace = "\n" +
                     "javax.management.MBeanException\n" +
-                    "\tat com.arthenica.smartexception.ExceptionsTest.getStackTrace(ExceptionsTest.java:54)\n" +
+                    "\tat com.arthenica.smartexception.compat.ExceptionsTest.getStackTrace(ExceptionsTest.java:54)\n" +
                     "Caused by: java.lang.IllegalStateException: java.util.ConcurrentModificationException: java.lang.ArrayIndexOutOfBoundsException: Index not valid.\n" +
-                    "\tat com.arthenica.smartexception.ExceptionsTest.getStackTrace(ExceptionsTest.java:53)\n" +
+                    "\tat com.arthenica.smartexception.compat.ExceptionsTest.getStackTrace(ExceptionsTest.java:53)\n" +
                     "Caused by: java.util.ConcurrentModificationException: java.lang.ArrayIndexOutOfBoundsException: Index not valid.\n" +
-                    "\tat com.arthenica.smartexception.ExceptionsTest.getStackTrace(ExceptionsTest.java:52)\n" +
+                    "\tat com.arthenica.smartexception.compat.ExceptionsTest.getStackTrace(ExceptionsTest.java:52)\n" +
                     "Caused by: java.lang.ArrayIndexOutOfBoundsException: Index not valid.\n" +
-                    "\tat com.arthenica.smartexception.ExceptionsTest.getStackTrace(ExceptionsTest.java:51)";
+                    "\tat com.arthenica.smartexception.compat.ExceptionsTest.getStackTrace(ExceptionsTest.java:51)";
 
             Assert.assertEquals(AbstractExceptionsTest.trimDynamicParts(expectedStackTrace), AbstractExceptionsTest.trimDynamicParts(Exceptions.getStackTraceString(e)));
         } finally {
@@ -89,11 +90,11 @@ public class ExceptionsTest {
         } catch (Exception e) {
             String expectedStackTrace = "\n" +
                     "javax.management.MBeanException\n" +
-                    "\tat com.arthenica.smartexception.ExceptionsTest.getStackTrace(ExceptionsTest.java:54)\n" +
+                    "\tat com.arthenica.smartexception.compat.ExceptionsTest.getStackTrace(ExceptionsTest.java:54)\n" +
                     "Caused by: java.lang.IllegalStateException: java.util.ConcurrentModificationException: java.lang.ArrayIndexOutOfBoundsException: Index not valid.\n" +
-                    "\tat com.arthenica.smartexception.ExceptionsTest.getStackTrace(ExceptionsTest.java:53)\n" +
+                    "\tat com.arthenica.smartexception.compat.ExceptionsTest.getStackTrace(ExceptionsTest.java:53)\n" +
                     "Caused by: java.util.ConcurrentModificationException: java.lang.ArrayIndexOutOfBoundsException: Index not valid.\n" +
-                    "\tat com.arthenica.smartexception.ExceptionsTest.getStackTrace(ExceptionsTest.java:52)";
+                    "\tat com.arthenica.smartexception.compat.ExceptionsTest.getStackTrace(ExceptionsTest.java:52)";
 
             Assert.assertEquals(AbstractExceptionsTest.trimDynamicParts(expectedStackTrace), AbstractExceptionsTest.trimDynamicParts(Exceptions.getStackTraceString(e)));
 
@@ -113,7 +114,7 @@ public class ExceptionsTest {
         } catch (Exception e) {
             String expectedStackTrace = "\n" +
                     "javax.management.MBeanException\n" +
-                    "\tat com.arthenica.smartexception.ExceptionsTest.getStackTrace(ExceptionsTest.java:54)";
+                    "\tat com.arthenica.smartexception.compat.ExceptionsTest.getStackTrace(ExceptionsTest.java:54)";
 
             Assert.assertEquals(AbstractExceptionsTest.trimDynamicParts(expectedStackTrace), AbstractExceptionsTest.trimDynamicParts(Exceptions.getStackTraceString(e, true)));
         } finally {
@@ -137,13 +138,13 @@ public class ExceptionsTest {
         } catch (Exception e) {
             String expectedStackTrace = "\n" +
                     "javax.management.MBeanException\n" +
-                    "\tat com.arthenica.smartexception.ExceptionsTest.getStackTraceWithPackages(ExceptionsTest.java:129)\n" +
+                    "\tat com.arthenica.smartexception.compat.ExceptionsTest.getStackTraceWithPackages(ExceptionsTest.java:129)\n" +
                     "Caused by: java.lang.IllegalStateException: java.util.ConcurrentModificationException: java.lang.ArrayIndexOutOfBoundsException: Index not valid.\n" +
-                    "\tat com.arthenica.smartexception.ExceptionsTest.getStackTraceWithPackages(ExceptionsTest.java:128)\n" +
+                    "\tat com.arthenica.smartexception.compat.ExceptionsTest.getStackTraceWithPackages(ExceptionsTest.java:128)\n" +
                     "Caused by: java.util.ConcurrentModificationException: java.lang.ArrayIndexOutOfBoundsException: Index not valid.\n" +
-                    "\tat com.arthenica.smartexception.ExceptionsTest.getStackTraceWithPackages(ExceptionsTest.java:127)\n" +
+                    "\tat com.arthenica.smartexception.compat.ExceptionsTest.getStackTraceWithPackages(ExceptionsTest.java:127)\n" +
                     "Caused by: java.lang.ArrayIndexOutOfBoundsException: Index not valid.\n" +
-                    "\tat com.arthenica.smartexception.ExceptionsTest.getStackTraceWithPackages(ExceptionsTest.java:126)";
+                    "\tat com.arthenica.smartexception.compat.ExceptionsTest.getStackTraceWithPackages(ExceptionsTest.java:126)";
 
             Assert.assertEquals(AbstractExceptionsTest.trimDynamicParts(expectedStackTrace), AbstractExceptionsTest.trimDynamicParts(Exceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), Collections.emptySet(), Collections.emptySet())));
         }
@@ -156,13 +157,13 @@ public class ExceptionsTest {
         } catch (Exception e) {
             String expectedStackTrace = "\n" +
                     "javax.management.MBeanException\n" +
-                    "\tat com.arthenica.smartexception.ExceptionsTest.getStackTraceWithPackages(ExceptionsTest.java:129)\n" +
+                    "\tat com.arthenica.smartexception.compat.ExceptionsTest.getStackTraceWithPackages(ExceptionsTest.java:129)\n" +
                     "Caused by: java.lang.IllegalStateException: java.util.ConcurrentModificationException: java.lang.ArrayIndexOutOfBoundsException: Index not valid.\n" +
-                    "\tat com.arthenica.smartexception.ExceptionsTest.getStackTraceWithPackages(ExceptionsTest.java:128)\n" +
+                    "\tat com.arthenica.smartexception.compat.ExceptionsTest.getStackTraceWithPackages(ExceptionsTest.java:128)\n" +
                     "Caused by: java.util.ConcurrentModificationException: java.lang.ArrayIndexOutOfBoundsException: Index not valid.\n" +
-                    "\tat com.arthenica.smartexception.ExceptionsTest.getStackTraceWithPackages(ExceptionsTest.java:127)\n" +
+                    "\tat com.arthenica.smartexception.compat.ExceptionsTest.getStackTraceWithPackages(ExceptionsTest.java:127)\n" +
                     "Caused by: java.lang.ArrayIndexOutOfBoundsException: Index not valid.\n" +
-                    "\tat com.arthenica.smartexception.ExceptionsTest.getStackTraceWithPackages(ExceptionsTest.java:126)";
+                    "\tat com.arthenica.smartexception.compat.ExceptionsTest.getStackTraceWithPackages(ExceptionsTest.java:126)";
 
             Assert.assertEquals(AbstractExceptionsTest.trimDynamicParts(expectedStackTrace), AbstractExceptionsTest.trimDynamicParts(Exceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), Collections.emptySet(), Collections.emptySet())));
         }
@@ -183,13 +184,13 @@ public class ExceptionsTest {
         } catch (Exception e) {
             String expectedStackTrace = "\n" +
                     "javax.management.MBeanException\n" +
-                    "\tat com.arthenica.smartexception.ExceptionsTest.getStackTraceWithRootPackage(ExceptionsTest.java:175)\n" +
+                    "\tat com.arthenica.smartexception.compat.ExceptionsTest.getStackTraceWithRootPackage(ExceptionsTest.java:175)\n" +
                     "Caused by: java.lang.IllegalStateException: java.util.ConcurrentModificationException: java.lang.ArrayIndexOutOfBoundsException: Index not valid.\n" +
-                    "\tat com.arthenica.smartexception.ExceptionsTest.getStackTraceWithRootPackage(ExceptionsTest.java:174)\n" +
+                    "\tat com.arthenica.smartexception.compat.ExceptionsTest.getStackTraceWithRootPackage(ExceptionsTest.java:174)\n" +
                     "Caused by: java.util.ConcurrentModificationException: java.lang.ArrayIndexOutOfBoundsException: Index not valid.\n" +
-                    "\tat com.arthenica.smartexception.ExceptionsTest.getStackTraceWithRootPackage(ExceptionsTest.java:173)\n" +
+                    "\tat com.arthenica.smartexception.compat.ExceptionsTest.getStackTraceWithRootPackage(ExceptionsTest.java:173)\n" +
                     "Caused by: java.lang.ArrayIndexOutOfBoundsException: Index not valid.\n" +
-                    "\tat com.arthenica.smartexception.ExceptionsTest.getStackTraceWithRootPackage(ExceptionsTest.java:172)";
+                    "\tat com.arthenica.smartexception.compat.ExceptionsTest.getStackTraceWithRootPackage(ExceptionsTest.java:172)";
 
             Assert.assertEquals(AbstractExceptionsTest.trimDynamicParts(expectedStackTrace), AbstractExceptionsTest.trimDynamicParts(Exceptions.getStackTraceString(e, "com.arthenica")));
         }
@@ -205,7 +206,7 @@ public class ExceptionsTest {
                     "\tat java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:65)\n" +
                     "\tat java.base/java.lang.Integer.parseInt(Integer.java:652)\n" +
                     "\tat java.base/java.lang.Integer.parseInt(Integer.java:770)\n" +
-                    "\tat com.arthenica.smartexception.ExceptionsTest.getStackTraceWithRootPackageAndGroupPackage(ExceptionsTest.java:200)";
+                    "\tat com.arthenica.smartexception.compat.ExceptionsTest.getStackTraceWithRootPackageAndGroupPackage(ExceptionsTest.java:200)";
 
             Assert.assertEquals(AbstractExceptionsTest.trimDynamicParts(expectedStackTrace), AbstractExceptionsTest.trimDynamicParts(Exceptions.getStackTraceString(e, "com.arthenica", "org.gradle")));
         }
@@ -222,7 +223,7 @@ public class ExceptionsTest {
                     "\tat java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:65)\n" +
                     "\tat java.base/java.lang.Integer.parseInt(Integer.java:652)\n" +
                     "\tat java.base/java.lang.Integer.parseInt(Integer.java:770)\n" +
-                    "\tat com.arthenica.smartexception.ExceptionsTest.getStackTraceWithRootPackageAndGroupPackage(ExceptionsTest.java:217)\n" +
+                    "\tat com.arthenica.smartexception.compat.ExceptionsTest.getStackTraceWithRootPackageAndGroupPackage(ExceptionsTest.java:217)\n" +
                     "\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n" +
                     "\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n" +
                     "\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n" +
@@ -295,23 +296,23 @@ public class ExceptionsTest {
         } catch (Exception e) {
             String expectedStackTrace = "\n" +
                     "javax.management.MBeanException\n" +
-                    "\tat com.arthenica.smartexception.ExceptionsTest.getStackTraceWithMaxDepth(ExceptionsTest.java:287)\n" +
+                    "\tat com.arthenica.smartexception.compat.ExceptionsTest.getStackTraceWithMaxDepth(ExceptionsTest.java:287)\n" +
                     "\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n" +
                     "Caused by: java.lang.IllegalStateException: java.util.ConcurrentModificationException: java.lang.ArrayIndexOutOfBoundsException: Index not valid.\n" +
-                    "\tat com.arthenica.smartexception.ExceptionsTest.getStackTraceWithMaxDepth(ExceptionsTest.java:286)\n" +
+                    "\tat com.arthenica.smartexception.compat.ExceptionsTest.getStackTraceWithMaxDepth(ExceptionsTest.java:286)\n" +
                     "\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n" +
                     "Caused by: java.util.ConcurrentModificationException: java.lang.ArrayIndexOutOfBoundsException: Index not valid.\n" +
-                    "\tat com.arthenica.smartexception.ExceptionsTest.getStackTraceWithMaxDepth(ExceptionsTest.java:285)\n" +
+                    "\tat com.arthenica.smartexception.compat.ExceptionsTest.getStackTraceWithMaxDepth(ExceptionsTest.java:285)\n" +
                     "\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n" +
                     "Caused by: java.lang.ArrayIndexOutOfBoundsException: Index not valid.\n" +
-                    "\tat com.arthenica.smartexception.ExceptionsTest.getStackTraceWithMaxDepth(ExceptionsTest.java:284)\n" +
+                    "\tat com.arthenica.smartexception.compat.ExceptionsTest.getStackTraceWithMaxDepth(ExceptionsTest.java:284)\n" +
                     "\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)";
 
             Assert.assertEquals(AbstractExceptionsTest.trimDynamicParts(expectedStackTrace), AbstractExceptionsTest.trimDynamicParts(Exceptions.getStackTraceString(e, 2)));
         }
 
         try {
-            com.arthenica.smartexception.compat.Exceptions.setIgnoreAllCauses(true);
+            Exceptions.setIgnoreAllCauses(true);
             Callable<String> stringCallable = () -> {
                 throw level1Exception;
             };
@@ -319,12 +320,12 @@ public class ExceptionsTest {
         } catch (Exception e) {
             String expectedStackTrace = "\n" +
                     "javax.management.MBeanException\n" +
-                    "\tat com.arthenica.smartexception.ExceptionsTest.getStackTraceWithMaxDepth(ExceptionsTest.java:287)\n" +
+                    "\tat com.arthenica.smartexception.compat.ExceptionsTest.getStackTraceWithMaxDepth(ExceptionsTest.java:287)\n" +
                     "\tat jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)";
 
             Assert.assertEquals(AbstractExceptionsTest.trimDynamicParts(expectedStackTrace), AbstractExceptionsTest.trimDynamicParts(Exceptions.getStackTraceString(e, 2)));
         } finally {
-            com.arthenica.smartexception.compat.Exceptions.setIgnoreAllCauses(false);
+            Exceptions.setIgnoreAllCauses(false);
         }
 
         try {
@@ -335,7 +336,7 @@ public class ExceptionsTest {
         } catch (Exception e) {
             String expectedStackTrace = "\n" +
                     "javax.management.MBeanException\n" +
-                    "\tat com.arthenica.smartexception.ExceptionsTest.getStackTraceWithMaxDepth(ExceptionsTest.java:287)\n" +
+                    "\tat com.arthenica.smartexception.compat.ExceptionsTest.getStackTraceWithMaxDepth(ExceptionsTest.java:287)\n" +
                     "\tat jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)";
 
             Assert.assertEquals(AbstractExceptionsTest.trimDynamicParts(expectedStackTrace), AbstractExceptionsTest.trimDynamicParts(Exceptions.getStackTraceString(e, 2, true)));

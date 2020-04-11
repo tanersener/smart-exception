@@ -32,8 +32,8 @@
 
 package com.arthenica.smartexception;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.Assert;
+import org.junit.Test;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -60,16 +60,20 @@ public class ApacheCxfTest {
                     "\tat org.apache.cxf ... 10 more\n" +
                     "\tat com.arthenica.smartexception.ApacheCxfTest.access(ApacheCxfTest.java:56)\n" +
                     "Caused by: java.net.ConnectException: ConnectException invoking http://localhost:12345/rs/service?param1=value1: Connection refused (Connection refused)\n" +
+                    "\tat java.base/jdk.internal.reflect ... 2 more\n" +
+                    "\tat java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:488)\n" +
                     "\tat org.apache.cxf ... 15 more\n" +
                     "\tat com.arthenica.smartexception.ApacheCxfTest.access(ApacheCxfTest.java:56)\n" +
                     "Caused by: java.net.ConnectException: Connection refused (Connection refused)\n" +
-                    "\tat java.net ... 6 more\n" +
+                    "\tat java.base/java.net ... 4 more\n" +
+                    "\tat java.base/sun.net ... 11 more\n" +
+                    "\tat java.base/java.net.HttpURLConnection.getResponseCode(HttpURLConnection.java:527)\n" +
                     "\tat org.apache.cxf ... 1 more\n" +
-                    "\tat java.security.AccessController.doPrivileged(Native Method)\n" +
+                    "\tat java.base/java.security.AccessController.doPrivileged(Native Method)\n" +
                     "\tat org.apache.cxf ... 18 more\n" +
                     "\tat com.arthenica.smartexception.ApacheCxfTest.access(ApacheCxfTest.java:56)";
 
-            Assertions.assertEquals(expectedStackTrace, AbstractExceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), new HashSet<>(Arrays.asList("org.apache.cxf", "java.net", "java.security")), new HashSet<>(Arrays.asList("sun.net", "sun.reflect", "java.lang.reflect"))));
+            Assert.assertEquals(AbstractExceptionsTest.trimDynamicParts(expectedStackTrace), AbstractExceptionsTest.trimDynamicParts(Exceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), new HashSet<>(Arrays.asList("org.apache.cxf", "java.net", "java.security", "sun.net", "jdk.internal.reflect")), Collections.emptySet())));
         }
     }
 

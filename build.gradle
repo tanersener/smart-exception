@@ -1,25 +1,52 @@
+import org.gradle.api.tasks.testing.Test
+
 plugins {
     id 'java'
 }
 
-group 'com.arthenica.smartexception'
+group 'com.arthenica'
 version = '0.1.0'
 
+// DEFINE SOURCE SETS
 sourceSets {
-    compatSourceSet {
-        java {
-            srcDir 'src/main/java'
-            exclude 'com/arthenica/smartexception/Exceptions.java'
-        }
-    }
     sourceSet {
         java {
             srcDir 'src/main/java'
             exclude 'com/arthenica/smartexception/compat/Exceptions.java'
         }
     }
+    compatSourceSet {
+        java {
+            srcDir 'src/main/java'
+            exclude 'com/arthenica/smartexception/Exceptions.java'
+        }
+    }
+    test {
+        java {
+            srcDir 'src/main/java'
+            exclude 'com/arthenica/smartexception/compat/ExceptionsTest.java'
+        }
+    }
+    compatTest {
+        java {
+            srcDir 'src/java/java'
+            srcDir 'src/test/java'
+            exclude 'com/arthenica/smartexception/ExceptionsTest.java'
+            exclude 'com/arthenica/smartexception/SpringTest.java'
+            exclude 'com/arthenica/smartexception/ApacheCxfTest.java'
+        }
+
+        compileClasspath += sourceSets.compatSourceSet.output
+        runtimeClasspath += sourceSets.compatSourceSet.output
+    }
 }
 
+configurations {
+    compatTestImplementation.extendsFrom testImplementation
+    compatTestRuntimeOnly.extendsFrom testRuntimeOnly
+}
+
+// DEFINE JARS
 task mainJar(type: Jar) {
     buildDir = 'target'
     sourceCompatibility = '1.9'
@@ -83,6 +110,7 @@ task compatSourceJar(type: Jar) {
     }
 }
 
+// DEFINE ARTIFACTS
 artifacts {
     archives mainJar
     archives compatJar
@@ -91,7 +119,9 @@ artifacts {
 }
 
 test {
-    useJUnitPlatform()
+    sourceCompatibility = '1.9'
+    targetCompatibility = '1.9'
+
     testLogging {
         events "passed", "skipped", "failed"
         showExceptions true
@@ -108,16 +138,43 @@ test {
     }
 }
 
+task compatTest(type: Test) {
+    description = 'Runs tests for compatibility artifact.'
+    group = 'verification'
+    testClassesDirs = sourceSets.compatTest.output.classesDirs
+    classpath = sourceSets.compatTest.runtimeClasspath
+    testLogging {
+        events "passed", "skipped", "failed"
+        showExceptions true
+        showCauses true
+        showStackTraces true
+        afterSuite { desc, result ->
+            if (!desc.parent) {
+                def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} passed, ${result.failedTestCount} failed, ${result.skippedTestCount} skipped)"
+                def startItem = '|  ', endItem = '  |'
+                def repeatLength = startItem.length() + output.length() + endItem.length()
+                println('\n' + ('-' * repeatLength) + '\n' + startItem + output + endItem + '\n' + ('-' * repeatLength))
+            }
+        }
+    }
+    shouldRunAfter test
+}
+
+// check.dependsOn compatTest
+
 dependencies {
     testImplementation 'org.apache.cxf:cxf-rt-rs-client:3.3.6'
     testImplementation 'org.apache.cxf:cxf-rt-transports-http-hc:3.3.6'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.2.6.RELEASE'
+    testImplementation('org.springframework.boot:spring-boot-starter-test:2.2.6.RELEASE') {
+        exclude group: 'org.junit.jupiter', module: 'junit-jupiter'
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+        exclude group: 'org.mockito', module: 'mockito-junit-jupiter'
+    }
     testImplementation 'org.springframework.boot:spring-boot-starter-web:2.2.6.RELEASE'
     testImplementation 'org.mockito:mockito-core:3.3.3'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.1'
     testImplementation 'org.slf4j:slf4j-api:1.7.30'
     testImplementation 'ch.qos.logback:logback-classic:1.2.3'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+    testImplementation 'junit:junit:4.13'
 }
 
 repositories {

@@ -32,43 +32,29 @@
 
 package com.arthenica.smartexception;
 
-/**
- * <p>Base interface for classes which can serialize {@link StackTraceElement} objects.
- *
- * @author Taner Sener
- * @since 0.1.0
- */
-public interface StackTraceElementSerializer {
+import org.junit.Assert;
+import org.junit.Test;
 
-    /**
-     * <p>Converts the given <code>stackTraceElement</code> into a string.
-     *
-     * @param stackTraceElement stack trace element to convert
-     * @return string representing the given <code>stackTraceElement</code>
-     */
-    String toString(final StackTraceElement stackTraceElement);
+public class AbstractExceptionsTest {
 
-    /**
-     * <p>Returns module name for the given <code>stackTraceElement</code>.
-     *
-     * @param stackTraceElement stack trace element to use
-     * @return module name of the given <code>stackTraceElement</code> or an empty string if implementation does not
-     * support printing module names
-     */
-    String getModuleName(final StackTraceElement stackTraceElement);
+    public static String trimDynamicParts(String stackTraceLine) {
+        // TRIM LINE NUMBER - ADDING NEW TEST CASES CAUSES EXISTING TESTS TO FAIL
+        // TRIM MODULE NAME - DEPENDING ON THE CLASS LOADER MODULE NAME CAN BE PRINTED OR NOT
+        return stackTraceLine.replaceAll(":.*\\)", "\\)").replaceAll(" .*/", " ");
+    }
 
-    /**
-     * <p>Returns string definition used to print native methods.
-     *
-     * @return string definition used to print native methods
-     */
-    String getNativeMethodDefinition();
+    @Test
+    public void isEmpty() {
+        Assert.assertTrue(AbstractExceptions.isEmpty(""));
+        Assert.assertTrue(AbstractExceptions.isEmpty(null));
+        Assert.assertTrue(AbstractExceptions.isEmpty("  "));
+    }
 
-    /**
-     * <p>Returns string definition used to print methods with unknown source.
-     *
-     * @return string definition used to print methods with unknown source
-     */
-    String getUnknownSourceDefinition();
+    @Test
+    public void packageName() {
+        Assert.assertEquals("com.arthenica.smartexception", AbstractExceptions.packageName("com.arthenica.smartexception.Exceptions"));
+        Assert.assertEquals("java.lang", AbstractExceptions.packageName("java.lang.String"));
+        Assert.assertEquals("", AbstractExceptions.packageName("String"));
+    }
 
 }

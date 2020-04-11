@@ -33,12 +33,14 @@
 package com.arthenica.smartexception;
 
 import com.arthenica.smartexception.spring.RestController;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -51,6 +53,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ContextConfiguration(classes = RestController.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 public class SpringTest {
 
     @Autowired
@@ -59,18 +62,24 @@ public class SpringTest {
     @Test
     public void getUserTest() {
         try {
+            Exceptions.setIgnoreModuleName(true);
             mvc.perform(MockMvcRequestBuilders.get("/user")).andExpect(status().isOk());
         } catch (Exception e) {
             String expectedStackTrace = "\n" +
                     "org.springframework.web.util.NestedServletException: Request processing failed; nested exception is java.lang.StringIndexOutOfBoundsException: Invalid index.\n" +
                     "\tat org.springframework ... 6 more\n" +
-                    "\tat com.arthenica.smartexception.SpringTest.getUserTest(SpringTest.java:62)\n" +
+                    "\tat com.arthenica.smartexception.SpringTest.getUserTest(SpringTest.java:66)\n" +
                     "Caused by: java.lang.StringIndexOutOfBoundsException: Invalid index.\n" +
                     "\tat com.arthenica.smartexception.spring.RestController.getUsers(RestController.java:46)\n" +
+                    "\tat jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n" +
+                    "\tat jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n" +
+                    "\tat jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n" +
                     "\tat org.springframework ... 14 more\n" +
-                    "\tat com.arthenica.smartexception.SpringTest.getUserTest(SpringTest.java:62)";
+                    "\tat com.arthenica.smartexception.SpringTest.getUserTest(SpringTest.java:66)";
 
-            Assertions.assertEquals(expectedStackTrace, AbstractExceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), Collections.singleton("org.springframework"), new HashSet<>(Arrays.asList("sun.net", "sun.security", "sun.reflect", "java.lang.reflect", "javax.servlet.http"))));
+            Assert.assertEquals(AbstractExceptionsTest.trimDynamicParts(expectedStackTrace), AbstractExceptionsTest.trimDynamicParts(Exceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), Collections.singleton("org.springframework"), new HashSet<>(Arrays.asList("sun.net", "sun.security", "sun.reflect", "java.lang.reflect", "javax.servlet.http")))));
+        } finally {
+            Exceptions.setIgnoreModuleName(false);
         }
     }
 
@@ -82,15 +91,9 @@ public class SpringTest {
             String expectedStackTrace = "\n" +
                     "org.springframework.web.util.NestedServletException: Request processing failed; nested exception is java.lang.StringIndexOutOfBoundsException: Invalid index.\n" +
                     "\tat org.springframework ... 6 more\n" +
-                    "\tat com.arthenica.smartexception.SpringTest.postUserTest(SpringTest.java:80)\n" +
-                    "Caused by: java.lang.StringIndexOutOfBoundsException: Invalid index.\n" +
-                    "\tat com.arthenica.smartexception.spring.RestController.getUsers(RestController.java:46)\n" +
-                    "\tat sun.reflect ... 2 more\n" +
-                    "\tat java.lang.reflect.Method.invoke(Method.java:498)\n" +
-                    "\tat org.springframework ... 14 more\n" +
-                    "\tat com.arthenica.smartexception.SpringTest.postUserTest(SpringTest.java:80)";
+                    "\tat com.arthenica.smartexception.SpringTest.postUserTest(SpringTest.java:89)";
 
-            Assertions.assertEquals(expectedStackTrace, AbstractExceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), new HashSet<>(Arrays.asList("org.springframework", "sun.net", "sun.security", "sun.reflect", "java.lang.reflect")), Collections.singleton("javax.servlet.http.HttpServlet")));
+            Assert.assertEquals(AbstractExceptionsTest.trimDynamicParts(expectedStackTrace), AbstractExceptionsTest.trimDynamicParts(Exceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), new HashSet<>(Arrays.asList("org.springframework", "sun.net", "sun.security", "sun.reflect", "java.lang.reflect")), Collections.singleton("javax.servlet.http.HttpServlet"), true)));
         }
     }
 
@@ -102,13 +105,20 @@ public class SpringTest {
             String expectedStackTrace = "\n" +
                     "org.springframework.web.util.NestedServletException: Request processing failed; nested exception is java.lang.NoSuchMethodException: Method not found.\n" +
                     "\tat org.springframework ... 6 more\n" +
-                    "\tat com.arthenica.smartexception.SpringTest.putUserTest(SpringTest.java:100)\n" +
+                    "\tat com.arthenica.smartexception.SpringTest.putUserTest(SpringTest.java:111)\n" +
                     "Caused by: java.lang.NoSuchMethodException: Method not found.\n" +
                     "\tat com.arthenica.smartexception.spring.RestController.update(RestController.java:56)\n" +
+                    "\tat jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n" +
+                    "\tat jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n" +
+                    "\tat jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n" +
                     "\tat org.springframework ... 14 more\n" +
-                    "\tat com.arthenica.smartexception.SpringTest.putUserTest(SpringTest.java:100)";
+                    "\tat com.arthenica.smartexception.SpringTest.putUserTest(SpringTest.java:111)";
 
-            Assertions.assertEquals(expectedStackTrace, AbstractExceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), Collections.singleton("org.springframework"), new HashSet<>(Arrays.asList("sun.net", "sun.security", "sun.reflect", "java.lang.reflect", "javax.servlet.http"))));
+            String expected = AbstractExceptionsTest.trimDynamicParts(expectedStackTrace);
+            System.out.println("expected = " + expected);
+            String actual = AbstractExceptionsTest.trimDynamicParts(Exceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), Collections.singleton("org.springframework"), new HashSet<>(Arrays.asList("sun.net", "sun.security", "sun.reflect", "java.lang.reflect", "javax.servlet.http"))));
+            System.out.println("actual = " + actual);
+            Assert.assertEquals(expected, actual);
         }
     }
 
