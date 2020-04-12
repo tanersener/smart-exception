@@ -1,1 +1,5 @@
 rootProject.name = 'smart-exception'
+include ':common', ':java', ':java9'
+project(":common").name = "smart-exception-common"
+project(":java").name = "smart-exception-java"
+project(":java9").name = "smart-exception-java9"

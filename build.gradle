@@ -1,183 +1,107 @@
-import org.gradle.api.tasks.testing.Test
+import java.text.SimpleDateFormat
 
-plugins {
-    id 'java'
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5'
+    }
 }
 
-group 'com.arthenica'
-version = '0.1.0'
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'com.jfrog.bintray'
+    apply plugin: 'maven-publish'
 
-// DEFINE SOURCE SETS
-sourceSets {
-    sourceSet {
-        java {
-            srcDir 'src/main/java'
-            exclude 'com/arthenica/smartexception/compat/Exceptions.java'
+    group = 'com.arthenica'
+    version = '0.1.0'
+
+    task sourcesJar(type: Jar) {
+        archiveClassifier.set('sources')
+        from sourceSets.main.java.srcDirs
+        manifest {
+            attributes(
+                    'Built-By': System.getProperty('user.name'),
+                    'Build-Timestamp': new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ").format(new Date()),
+                    'Created-By': "Gradle ${gradle.gradleVersion}",
+                    'Build-Jdk': System.getProperty('java.version')
+            )
         }
     }
-    compatSourceSet {
-        java {
-            srcDir 'src/main/java'
-            exclude 'com/arthenica/smartexception/Exceptions.java'
+
+    jar {
+        buildDir = 'target'
+        manifest {
+            attributes(
+                    'Built-By': System.getProperty('user.name'),
+                    'Build-Timestamp': new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ").format(new Date()),
+                    'Created-By': "Gradle ${gradle.gradleVersion}",
+                    'Build-Jdk': System.getProperty('java.version')
+            )
         }
     }
+
     test {
-        java {
-            srcDir 'src/main/java'
-            exclude 'com/arthenica/smartexception/compat/ExceptionsTest.java'
-        }
-    }
-    compatTest {
-        java {
-            srcDir 'src/java/java'
-            srcDir 'src/test/java'
-            exclude 'com/arthenica/smartexception/ExceptionsTest.java'
-            exclude 'com/arthenica/smartexception/SpringTest.java'
-            exclude 'com/arthenica/smartexception/ApacheCxfTest.java'
-        }
-
-        compileClasspath += sourceSets.compatSourceSet.output
-        runtimeClasspath += sourceSets.compatSourceSet.output
-    }
-}
-
-configurations {
-    compatTestImplementation.extendsFrom testImplementation
-    compatTestRuntimeOnly.extendsFrom testRuntimeOnly
-}
-
-// DEFINE JARS
-task mainJar(type: Jar) {
-    buildDir = 'target'
-    sourceCompatibility = '1.9'
-    targetCompatibility = '1.9'
-    from sourceSets.sourceSet.output
-    manifest {
-        attributes(
-                'Built-By': System.getProperty('user.name'),
-                'Build-Timestamp': new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ").format(new Date()),
-                'Created-By': "Gradle ${gradle.gradleVersion}",
-                'Build-Jdk': System.getProperty('java.version')
-        )
-    }
-}
-
-task compatJar(type: Jar) {
-    buildDir = 'target'
-    archiveClassifier.set("compat")
-    sourceCompatibility = '1.7'
-    targetCompatibility = '1.7'
-    from sourceSets.compatSourceSet.output
-    manifest {
-        attributes(
-                'Built-By': System.getProperty('user.name'),
-                'Build-Timestamp': new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ").format(new Date()),
-                'Created-By': "Gradle ${gradle.gradleVersion}",
-                'Build-Jdk': System.getProperty('java.version')
-        )
-    }
-}
-
-task mainSourceJar(type: Jar) {
-    buildDir = 'target'
-    archiveClassifier.set("sources")
-    sourceCompatibility = '1.9'
-    targetCompatibility = '1.9'
-    from sourceSets.sourceSet.allJava
-    manifest {
-        attributes(
-                'Built-By': System.getProperty('user.name'),
-                'Build-Timestamp': new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ").format(new Date()),
-                'Created-By': "Gradle ${gradle.gradleVersion}",
-                'Build-Jdk': System.getProperty('java.version')
-        )
-    }
-}
-
-task compatSourceJar(type: Jar) {
-    buildDir = 'target'
-    archiveClassifier.set("compat-sources")
-    sourceCompatibility = '1.7'
-    targetCompatibility = '1.7'
-    from sourceSets.compatSourceSet.allJava
-    manifest {
-        attributes(
-                'Built-By': System.getProperty('user.name'),
-                'Build-Timestamp': new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ").format(new Date()),
-                'Created-By': "Gradle ${gradle.gradleVersion}",
-                'Build-Jdk': System.getProperty('java.version')
-        )
-    }
-}
-
-// DEFINE ARTIFACTS
-artifacts {
-    archives mainJar
-    archives compatJar
-    archives mainSourceJar
-    archives compatSourceJar
-}
-
-test {
-    sourceCompatibility = '1.9'
-    targetCompatibility = '1.9'
-
-    testLogging {
-        events "passed", "skipped", "failed"
-        showExceptions true
-        showCauses true
-        showStackTraces true
-        afterSuite { desc, result ->
-            if (!desc.parent) {
-                def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} passed, ${result.failedTestCount} failed, ${result.skippedTestCount} skipped)"
-                def startItem = '|  ', endItem = '  |'
-                def repeatLength = startItem.length() + output.length() + endItem.length()
-                println('\n' + ('-' * repeatLength) + '\n' + startItem + output + endItem + '\n' + ('-' * repeatLength))
+        testLogging {
+            events "passed", "skipped", "failed"
+            showExceptions true
+            showCauses true
+            showStackTraces true
+            afterSuite { desc, result ->
+                if (!desc.parent) {
+                    def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} passed, ${result.failedTestCount} failed, ${result.skippedTestCount} skipped)"
+                    def startItem = '|  ', endItem = '  |'
+                    def repeatLength = startItem.length() + output.length() + endItem.length()
+                    println('\n' + ('-' * repeatLength) + '\n' + startItem + output + endItem + '\n' + ('-' * repeatLength))
+                }
             }
         }
     }
-}
 
-task compatTest(type: Test) {
-    description = 'Runs tests for compatibility artifact.'
-    group = 'verification'
-    testClassesDirs = sourceSets.compatTest.output.classesDirs
-    classpath = sourceSets.compatTest.runtimeClasspath
-    testLogging {
-        events "passed", "skipped", "failed"
-        showExceptions true
-        showCauses true
-        showStackTraces true
-        afterSuite { desc, result ->
-            if (!desc.parent) {
-                def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} passed, ${result.failedTestCount} failed, ${result.skippedTestCount} skipped)"
-                def startItem = '|  ', endItem = '  |'
-                def repeatLength = startItem.length() + output.length() + endItem.length()
-                println('\n' + ('-' * repeatLength) + '\n' + startItem + output + endItem + '\n' + ('-' * repeatLength))
-            }
+    ext {
+        cxfVersion = '3.3.6'
+        springBootVersion = '2.2.6.RELEASE'
+        mockitoVersion = '3.3.3'
+        slf4jVersion = '1.7.30'
+        logbackVersion = '1.2.3'
+        junitVersion = '4.13'
+
+        // release properties
+        bintrayRepo = 'maven'
+        publishedGroupId = 'com.arthenica'
+        siteUrl = 'https://github.com/tanersener/smart-exception'
+        issueTrackerUrl = 'https://github.com/tanersener/smart-exception/issues'
+        gitUrl = 'https://github.com/tanersener/smart-exception.git'
+        developerId = 'tanersener'
+        developerName = 'Taner Sener'
+        developerEmail = 'tanersener@gmail.com'
+
+        licenseName = 'The 3-Clause BSD License'
+        licenseUrl = 'https://opensource.org/licenses/BSD-3-Clause'
+        allLicenses = ["BSD 3-Clause"]
+    }
+
+    dependencies {
+        testImplementation 'org.apache.cxf:cxf-rt-rs-client:' + cxfVersion
+        testImplementation 'org.apache.cxf:cxf-rt-transports-http-hc:' + cxfVersion
+        testImplementation('org.springframework.boot:spring-boot-starter-test:' + springBootVersion) {
+            exclude group: 'org.junit.jupiter', module: 'junit-jupiter'
+            exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+
+            exclude group: 'org.mockito', module: 'mockito-junit-jupiter'
         }
+        testImplementation 'org.springframework.boot:spring-boot-starter-web:' + springBootVersion
+        testImplementation 'org.mockito:mockito-core:' + mockitoVersion
+        testImplementation 'org.slf4j:slf4j-api:' + slf4jVersion
+        testImplementation 'ch.qos.logback:logback-classic:' + logbackVersion
+        testImplementation 'junit:junit:' + junitVersion
     }
-    shouldRunAfter test
-}
 
-// check.dependsOn compatTest
-
-dependencies {
-    testImplementation 'org.apache.cxf:cxf-rt-rs-client:3.3.6'
-    testImplementation 'org.apache.cxf:cxf-rt-transports-http-hc:3.3.6'
-    testImplementation('org.springframework.boot:spring-boot-starter-test:2.2.6.RELEASE') {
-        exclude group: 'org.junit.jupiter', module: 'junit-jupiter'
-        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-        exclude group: 'org.mockito', module: 'mockito-junit-jupiter'
+    repositories {
+        jcenter()
+        mavenCentral()
     }
-    testImplementation 'org.springframework.boot:spring-boot-starter-web:2.2.6.RELEASE'
-    testImplementation 'org.mockito:mockito-core:3.3.3'
-    testImplementation 'org.slf4j:slf4j-api:1.7.30'
-    testImplementation 'ch.qos.logback:logback-classic:1.2.3'
-    testImplementation 'junit:junit:4.13'
-}
 
-repositories {
-    jcenter()
-    mavenCentral()
 }

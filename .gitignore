@@ -1,6 +1,6 @@
 # Compiled class file
 *.class
-/target
+target
 
 # Log file
 *.log
@@ -26,3 +26,9 @@ hs_err_pid*
 # project and buildfiles
 /.idea
 /.gradle
+
+# temp mac files
+.DS_Store
+
+# local settings
+local.properties
