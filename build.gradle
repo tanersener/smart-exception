@@ -77,7 +77,6 @@ subprojects {
         developerId = 'tanersener'
         developerName = 'Taner Sener'
         developerEmail = 'tanersener@gmail.com'
-
         licenseName = 'The 3-Clause BSD License'
         licenseUrl = 'https://opensource.org/licenses/BSD-3-Clause'
         allLicenses = ["BSD 3-Clause"]
@@ -89,7 +88,6 @@ subprojects {
         testImplementation('org.springframework.boot:spring-boot-starter-test:' + springBootVersion) {
             exclude group: 'org.junit.jupiter', module: 'junit-jupiter'
             exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-
             exclude group: 'org.mockito', module: 'mockito-junit-jupiter'
         }
         testImplementation 'org.springframework.boot:spring-boot-starter-web:' + springBootVersion

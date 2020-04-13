@@ -29,70 +29,74 @@ ext {
     libraryVersion = version
 }
 
-def pomConfig = {
-    licenses {
-        license {
-            name licenseName
-            url licenseUrl
+if (project.hasProperty('release')) {
+
+    def pomConfig = {
+        licenses {
+            license {
+                name licenseName
+                url licenseUrl
+            }
         }
-    }
-    developers {
-        developer {
-            id developerId
-            name developerName
-            email developerEmail
+        developers {
+            developer {
+                id developerId
+                name developerName
+                email developerEmail
+            }
+        }
+
+        scm {
+            connection gitUrl
+            developerConnection gitUrl
+            url siteUrl
         }
     }
 
-    scm {
-        connection gitUrl
-        developerConnection gitUrl
-        url siteUrl
-    }
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-            artifact sourcesJar
-            artifact javadocJar
-            groupId group
-            artifactId libraryName
-            version libraryVersion
-            pom.withXml {
-                def root = asNode()
-                root.appendNode('packaging', 'jar')
-                root.appendNode('name', libraryName)
-                root.appendNode('description', libraryDescription)
-                root.appendNode('url', siteUrl)
-                root.children().last() + pomConfig
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+                artifact sourcesJar
+                artifact javadocJar
+                groupId group
+                artifactId libraryName
+                version libraryVersion
+                pom.withXml {
+                    def root = asNode()
+                    root.appendNode('packaging', 'jar')
+                    root.appendNode('name', libraryName)
+                    root.appendNode('description', libraryDescription)
+                    root.appendNode('url', siteUrl)
+                    root.children().last() + pomConfig
+                }
             }
         }
     }
-}
 
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
-bintray {
-    user = properties.getProperty("bintray.user")
-    key = properties.getProperty("bintray.apikey")
-    publications = ['mavenJava']
-    pkg {
-        repo = bintrayRepo
-        name = bintrayName
-        desc = libraryDescription
-        websiteUrl = siteUrl
-        issueTrackerUrl = issueTrackerUrl
-        vcsUrl = gitUrl
-        licenses = allLicenses
-        dryRun = true
-        publish = false
-        override = false
-        publicDownloadNumbers = false
-        version {
+    bintray {
+        user = properties.getProperty("bintray.user")
+        key = properties.getProperty("bintray.apikey")
+        publications = ['mavenJava']
+        pkg {
+            repo = bintrayRepo
+            name = bintrayName
             desc = libraryDescription
+            websiteUrl = siteUrl
+            issueTrackerUrl = issueTrackerUrl
+            vcsUrl = gitUrl
+            licenses = allLicenses
+            dryRun = true
+            publish = false
+            override = false
+            publicDownloadNumbers = false
+            version {
+                desc = libraryDescription
+            }
         }
     }
+
 }
