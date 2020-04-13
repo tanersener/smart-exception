@@ -17,4 +17,4 @@ cache:
 jdk:
   - openjdk9
 script:
-  - bash ./gradlew clean build
+  - ./gradlew clean build
