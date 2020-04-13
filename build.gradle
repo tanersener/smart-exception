@@ -77,7 +77,6 @@ subprojects {
         developerId = 'tanersener'
         developerName = 'Taner Sener'
         developerEmail = 'tanersener@gmail.com'
-
         licenseName = 'The 3-Clause BSD License'
         licenseUrl = 'https://opensource.org/licenses/BSD-3-Clause'
         allLicenses = ["BSD 3-Clause"]
