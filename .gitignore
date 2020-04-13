@@ -25,7 +25,7 @@ hs_err_pid*
 
 # project and buildfiles
 /.idea
-/.gradle
+.gradle
 
 # temp mac files
 .DS_Store

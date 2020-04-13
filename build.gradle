@@ -89,7 +89,6 @@ subprojects {
         testImplementation('org.springframework.boot:spring-boot-starter-test:' + springBootVersion) {
             exclude group: 'org.junit.jupiter', module: 'junit-jupiter'
             exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-
             exclude group: 'org.mockito', module: 'mockito-junit-jupiter'
         }
         testImplementation 'org.springframework.boot:spring-boot-starter-web:' + springBootVersion
