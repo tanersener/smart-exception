@@ -2,7 +2,7 @@
 
 Utilities to handle Throwable objects and stack trace elements
 
-<img src="https://github.com/tanersener/smart-exception/blob/master/docs/assets/smart-exception-logo-v2.png" width="300">
+<img src="https://github.com/tanersener/smart-exception/blob/development/docs/assets/smart-exception-logo-v4.png" width="240">
 
 ### 1. Features
 
