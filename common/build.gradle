@@ -21,8 +21,12 @@ artifacts {
     archives sourcesJar
 }
 
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+archivesBaseName = "smart-exception-common"
+
 ext {
-    bintrayName = "smart-exception-common"
     libraryName = "smart-exception-common"
     artifact = "smart-exception-common"
     libraryDescription = "smart-exception common package"
@@ -31,72 +35,59 @@ ext {
 
 if (project.hasProperty('release')) {
 
-    def pomConfig = {
-        licenses {
-            license {
-                name licenseName
-                url licenseUrl
-            }
-        }
-        developers {
-            developer {
-                id developerId
-                name developerName
-                email developerEmail
-            }
-        }
-
-        scm {
-            connection gitUrl
-            developerConnection gitUrl
-            url siteUrl
+    File propertiesFile = project.rootProject.file('local.properties')
+    if (propertiesFile.exists()) {
+        Properties properties = new Properties()
+        properties.load(new FileInputStream(propertiesFile))
+        properties.each { name, value ->
+            ext[name] = value
         }
     }
 
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                from components.java
-                artifact sourcesJar
-                artifact javadocJar
-                groupId group
-                artifactId libraryName
-                version libraryVersion
-                pom.withXml {
-                    def root = asNode()
-                    root.appendNode('packaging', 'jar')
-                    root.appendNode('name', libraryName)
-                    root.appendNode('description', libraryDescription)
-                    root.appendNode('url', siteUrl)
-                    root.children().last() + pomConfig
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+
+                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+
+                pom.project {
+                    packaging 'jar'
+                    name = libraryName
+                    description = libraryDescription
+                    url = siteUrl
+
+                    licenses {
+                        license {
+                            name = licenseName
+                            url = licenseUrl
+                        }
+                    }
+                    developers {
+                        developer {
+                            id developerId
+                            name developerName
+                            email developerEmail
+                        }
+                    }
+                    scm {
+                        connection gitUrl
+                        developerConnection gitUrl
+                        url siteUrl
+                    }
                 }
             }
         }
     }
 
-    Properties properties = new Properties()
-    properties.load(project.rootProject.file('local.properties').newDataInputStream())
-
-    bintray {
-        user = properties.getProperty("bintray.user")
-        key = properties.getProperty("bintray.apikey")
-        publications = ['mavenJava']
-        pkg {
-            repo = bintrayRepo
-            name = bintrayName
-            desc = libraryDescription
-            websiteUrl = siteUrl
-            issueTrackerUrl = issueTrackerUrl
-            vcsUrl = gitUrl
-            licenses = allLicenses
-            dryRun = true
-            publish = false
-            override = false
-            publicDownloadNumbers = false
-            version {
-                desc = libraryDescription
-            }
-        }
+    signing {
+        sign configurations.archives
     }
 
 }
