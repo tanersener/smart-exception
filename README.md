@@ -1,4 +1,4 @@
-# SmartException ![GitHub release](https://img.shields.io/badge/release-v0.1.0-blue.svg) ![Bintray](https://img.shields.io/badge/bintray-v0.1.0-blue.svg) [![Build Status](https://travis-ci.org/tanersener/smart-exception.svg?branch=master)](https://travis-ci.org/tanersener/smart-exception)
+# SmartException ![GitHub release](https://img.shields.io/badge/release-v0.1.0-blue.svg) ![Maven Central](https://img.shields.io/maven-central/v/com.arthenica/smart-exception-java) [![Build Status](https://travis-ci.org/tanersener/smart-exception.svg?branch=master)](https://travis-ci.org/tanersener/smart-exception)
 
 Utilities to handle Throwable objects and stack trace elements
 
@@ -20,7 +20,7 @@ Utilities to handle Throwable objects and stack trace elements
 
 ### 2. Using
 
-Binaries are available at [Github](https://github.com/tanersener/mobile-ffmpeg/releases) and [JCenter](https://bintray.com/bintray/jcenter).
+Binaries are available at [Github](https://github.com/tanersener/mobile-ffmpeg/releases) and [Maven Central](https://repo1.maven.org/maven2).
 
 #### 2.1. Gradle
 
@@ -429,7 +429,7 @@ See the building status from the table below.
 - `common` includes shared classes and interfaces
 - `java` has Java 7/8 and Android specific implementation
 - `java9` has the implementation for Java 9 or later
-- `test` includes test classes that use library jars published in `jcenter()`
+- `test` includes test classes that use library jars published in `mavenCentral()`
 
 ### 7. License
 
