@@ -3,7 +3,6 @@ import java.text.SimpleDateFormat
 buildscript {
     repositories {
         google()
-        jcenter()
     }
 }
 
@@ -93,7 +92,6 @@ subprojects {
     }
 
     repositories {
-        jcenter()
         mavenCentral()
     }
 
