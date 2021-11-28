@@ -2,5 +2,5 @@ sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7
 
 dependencies {
-    implementation 'com.arthenica:smart-exception-java:0.1.0'
+    implementation 'com.arthenica:smart-exception-java:0.1.1'
 }
