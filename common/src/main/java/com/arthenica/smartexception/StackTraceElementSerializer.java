@@ -43,10 +43,20 @@ public interface StackTraceElementSerializer {
     /**
      * <p>Converts the given <code>stackTraceElement</code> into a string.
      *
-     * @param stackTraceElement stack trace element to convert
+     * @param stackTraceElement       stack trace element to convert
+     * @param printPackageInformation print package information
      * @return string representing the given <code>stackTraceElement</code>
      */
-    String toString(final StackTraceElement stackTraceElement);
+    String toString(final StackTraceElement stackTraceElement, final boolean printPackageInformation);
+
+    /**
+     * <p>Returns package information for the given <code>stackTraceElement</code>.
+     *
+     * @param stackTraceElement stack trace element to use
+     * @return package information of the given <code>stackTraceElement</code> or an empty string if implementation
+     * does not support getting package information
+     */
+    String getPackageInformation(final StackTraceElement stackTraceElement);
 
     /**
      * <p>Returns module name for the given <code>stackTraceElement</code>.

@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2020, Taner Sener
+ * Copyright (c) 2020-2021, Taner Sener
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,6 +32,13 @@
 
 package com.arthenica.smartexception.java;
 
+import com.arthenica.smartexception.AbstractExceptions;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -40,6 +47,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.security.DigestException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
@@ -516,6 +524,74 @@ public class ExceptionsTest {
             Assert.assertNull(Exceptions.searchCause(e, ArrayIndexOutOfBoundsException.class, "Index not valid.", 2));
             Assert.assertNull(Exceptions.searchCause(e, ArrayIndexOutOfBoundsException.class, "Index valid.", 3));
             Assert.assertEquals(level4Exception, Exceptions.searchCause(e, ArrayIndexOutOfBoundsException.class, "Index not valid.", 3));
+        }
+    }
+
+    @Test
+    public void packageInformationJunit() {
+        RuntimeException runtimeException = new RuntimeException("Fail!");
+
+        StackTraceElement stackTraceElement = Arrays.asList(AbstractExceptions.getStackTrace(runtimeException, 6)).get(5);
+        Assert.assertEquals("junit-4.13.jar", libraryName(stackTraceElement));
+        Assert.assertEquals("4.13", version(stackTraceElement));
+    }
+
+    @Test
+    public void packageInformationApacheCommons() {
+        try {
+            Hex.decodeHex("12345".toCharArray());
+        } catch (DecoderException exception) {
+            StackTraceElement[] stackTrace = AbstractExceptions.getStackTrace(exception, 10);
+
+            StackTraceElement stackTraceElement = Arrays.asList(stackTrace).get(0);
+            Assert.assertEquals("commons-codec-1.10.jar", libraryName(stackTraceElement));
+            Assert.assertEquals("1.10", version(stackTraceElement));
+        }
+    }
+
+    @Test
+    public void packageInformationJson() {
+        try {
+            new JSONArray("");
+        } catch (JSONException exception) {
+            StackTraceElement[] stackTrace = AbstractExceptions.getStackTrace(exception, 10);
+
+            StackTraceElement stackTraceElement = Arrays.asList(stackTrace).get(0);
+            Assert.assertEquals("android-json-0.0.20131108.vaadin1.jar", libraryName(stackTraceElement));
+            Assert.assertEquals("0.0.20131108.vaadin1", version(stackTraceElement));
+        }
+    }
+
+    @Test
+    public void packageInformationJackson() {
+        try {
+            new ObjectMapper().readValue("", Long.class);
+        } catch (JsonProcessingException exception) {
+            StackTraceElement[] stackTrace = AbstractExceptions.getStackTrace(exception, 10);
+
+            StackTraceElement stackTraceElement = Arrays.asList(stackTrace).get(0);
+            Assert.assertEquals("jackson-databind-2.10.3.jar", libraryName(stackTraceElement));
+            Assert.assertEquals("2.10.3", version(stackTraceElement));
+        }
+    }
+
+    String libraryName(final StackTraceElement stackTraceElement) {
+        String className = stackTraceElement.getClassName();
+        Class<?> loadedClass = Exceptions.classLoader.loadClass(className);
+        if (loadedClass != null) {
+            return AbstractExceptions.libraryName(loadedClass);
+        } else {
+            return null;
+        }
+    }
+
+    String version(final StackTraceElement stackTraceElement) {
+        String className = stackTraceElement.getClassName();
+        Class<?> loadedClass = Exceptions.classLoader.loadClass(className);
+        if (loadedClass != null) {
+            return AbstractExceptions.getVersion(Exceptions.packageLoader, loadedClass, AbstractExceptions.packageName(className));
+        } else {
+            return null;
         }
     }
 
