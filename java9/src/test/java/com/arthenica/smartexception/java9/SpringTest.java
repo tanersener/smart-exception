@@ -118,4 +118,25 @@ public class SpringTest {
         }
     }
 
+    @Test
+    public void getStackTraceWithMaxDepthAndPrintPackageInformation() {
+        try {
+            mvc.perform(MockMvcRequestBuilders.post("/user").content("Body")).andExpect(status().isOk());
+        } catch (Exception e) {
+            String expectedStackTrace = "\n" +
+                    "org.springframework.web.util.NestedServletException: Request processing failed; nested exception is java.lang.NoSuchMethodException: Method not found.\n" +
+                    "\tat org.springframework ... 6 more [spring-webmvc-5.2.5.RELEASE.jar]\n" +
+                    "\tat com.arthenica.smartexception.java9.SpringTest.getStackTraceWithMaxDepthAndPrintPackageInformation(SpringTest.java:121)\n" +
+                    "Caused by: java.lang.NoSuchMethodException: Method not found.\n" +
+                    "\tat com.arthenica.smartexception.java9.spring.RestController.update(RestController.java:56)\n" +
+                    "\tat jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n" +
+                    "\tat jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n" +
+                    "\tat jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n" +
+                    "\tat org.springframework ... 14 more [spring-web-5.2.5.RELEASE.jar]\n" +
+                    "\tat com.arthenica.smartexception.java9.SpringTest.getStackTraceWithMaxDepthAndPrintPackageInformation(SpringTest.java:121)";
+
+            Assert.assertEquals(ExceptionsTest.trimDynamicParts(expectedStackTrace), ExceptionsTest.trimDynamicParts(Exceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), new HashSet<String>(Collections.singleton("org.springframework")), new HashSet<>(Arrays.asList("sun.net", "sun.security", "sun.reflect", "java.lang.reflect", "javax.servlet.http")), false, true)));
+        }
+    }
+
 }

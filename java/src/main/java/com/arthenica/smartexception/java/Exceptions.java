@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2020, Taner Sener
+ * Copyright (c) 2020-2021, Taner Sener
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,6 +33,8 @@
 package com.arthenica.smartexception.java;
 
 import com.arthenica.smartexception.AbstractExceptions;
+import com.arthenica.smartexception.ClassLoader;
+import com.arthenica.smartexception.PackageLoader;
 import com.arthenica.smartexception.StackTraceElementSerializer;
 
 import java.util.Set;
@@ -47,10 +49,13 @@ import java.util.Set;
 public class Exceptions {
 
     static {
+        packageLoader = new JavaPackageLoader();
+        classLoader = new JavaClassLoader();
+
         AbstractExceptions.setStackTraceElementSerializer(new StackTraceElementSerializer() {
 
             @Override
-            public String toString(StackTraceElement stackTraceElement) {
+            public String toString(final StackTraceElement stackTraceElement, final boolean printPackageInformation) {
                 final StringBuilder stringBuilder = new StringBuilder();
 
                 stringBuilder.append(stackTraceElement.getClassName());
@@ -58,7 +63,7 @@ public class Exceptions {
                 stringBuilder.append(stackTraceElement.getMethodName());
 
                 if (stackTraceElement.isNativeMethod()) {
-                    stringBuilder.append("(Native Method)");
+                    stringBuilder.append(getNativeMethodDefinition());
                 } else if ((stackTraceElement.getFileName() != null) && (stackTraceElement.getFileName().length() > 0)) {
                     stringBuilder.append("(");
                     stringBuilder.append(stackTraceElement.getFileName());
@@ -68,7 +73,37 @@ public class Exceptions {
                     }
                     stringBuilder.append(")");
                 } else {
-                    stringBuilder.append("(Unknown Source)");
+                    stringBuilder.append(getUnknownSourceDefinition());
+                }
+
+                if (printPackageInformation) {
+                    stringBuilder.append(getPackageInformation(stackTraceElement));
+                }
+
+                return stringBuilder.toString();
+            }
+
+            @Override
+            public String getPackageInformation(final StackTraceElement stackTraceElement) {
+                final StringBuilder stringBuilder = new StringBuilder();
+
+                String className = stackTraceElement.getClassName();
+                Class<?> loadedClass = Exceptions.classLoader.loadClass(className);
+                if (loadedClass != null) {
+                    final String libraryName = AbstractExceptions.libraryName(loadedClass);
+                    final String version = AbstractExceptions.getVersion(Exceptions.packageLoader, loadedClass, AbstractExceptions.packageName(className));
+
+                    if ((libraryName != null) || (version != null)) {
+                        stringBuilder.append(" [");
+                        stringBuilder.append(libraryName);
+                        if ((libraryName != null) && (version != null)) {
+                            if (!libraryName.contains(version)) {
+                                stringBuilder.append(":");
+                                stringBuilder.append(version);
+                            }
+                        }
+                        stringBuilder.append("]");
+                    }
                 }
 
                 return stringBuilder.toString();
@@ -90,6 +125,10 @@ public class Exceptions {
             }
         });
     }
+
+    static PackageLoader packageLoader;
+
+    static ClassLoader classLoader;
 
     /**
      * <p>Registers a new root package.
@@ -183,6 +222,31 @@ public class Exceptions {
     }
 
     /**
+     * <p>Returns the value of print package information option.
+     *
+     * @return the value of global print package information option. When this option is true, stack trace elements
+     * printed or converted to string will include the name of the jar file that includes the printed class and the version
+     * of the jar. If it is false, none of this information is printed
+     */
+    public static boolean isPrintPackageInformation() {
+        return AbstractExceptions.isPrintPackageInformation();
+    }
+
+    /**
+     * <p>Sets the value of print package information option.
+     *
+     * <p>When this option is true, stack trace elements printed or converted to string will include the name of the
+     * jar file that includes the printed class and the version of the jar.
+     *
+     * <p>Note that for some libraries extracting the jar file and the version may not be possible.
+     *
+     * @param printPackageInformation new print package information option.
+     */
+    public static void setPrintPackageInformation(final boolean printPackageInformation) {
+        AbstractExceptions.setPrintPackageInformation(printPackageInformation);
+    }
+
+    /**
      * <p>Returns the smart stack trace for the given <code>throwable</code>.
      *
      * <p>This method uses root packages registered by {@link #registerRootPackage(String)}, group packages registered
@@ -239,6 +303,21 @@ public class Exceptions {
     }
 
     /**
+     * <p>Returns the smart stack trace for the given <code>throwable</code> using packages provided.
+     *
+     * @param throwable               parent throwable
+     * @param rootPackageSet          root packages to use for building the stack trace
+     * @param groupPackageSet         group packages to use for building the stack trace
+     * @param ignorePackageSet        ignore packages to use for building the stack trace
+     * @param ignoreAllCauses         ignore all causes in the exception chain
+     * @param printPackageInformation print package information
+     * @return a string containing the smart stack trace for the given <code>throwable</code>
+     */
+    public static String getStackTraceString(final Throwable throwable, final Set<String> rootPackageSet, final Set<String> groupPackageSet, final Set<String> ignorePackageSet, final boolean ignoreAllCauses, final boolean printPackageInformation) {
+        return AbstractExceptions.getStackTraceString(throwable, rootPackageSet, groupPackageSet, ignorePackageSet, ignoreAllCauses, printPackageInformation);
+    }
+
+    /**
      * <p>Returns the smart stack trace for the given <code>throwable</code> using root package provided.
      *
      * @param throwable   parent throwable
@@ -282,6 +361,19 @@ public class Exceptions {
      */
     public static String getStackTraceString(final Throwable throwable, final int maxDepth, final boolean ignoreAllCauses) {
         return AbstractExceptions.getStackTraceString(throwable, maxDepth, ignoreAllCauses);
+    }
+
+    /**
+     * <p>Returns the smart stack trace for the given <code>throwable</code> using elements found until the maxDepth.
+     *
+     * @param throwable               parent throwable
+     * @param maxDepth                max depth in exception chain that will be used
+     * @param ignoreAllCauses         ignore all causes in the exception chain
+     * @param printPackageInformation print package information
+     * @return a string containing the smart stack trace for the given <code>throwable</code>
+     */
+    public static String getStackTraceString(final Throwable throwable, final int maxDepth, final boolean ignoreAllCauses, final boolean printPackageInformation) {
+        return AbstractExceptions.getStackTraceString(throwable, maxDepth, ignoreAllCauses, printPackageInformation);
     }
 
     /**

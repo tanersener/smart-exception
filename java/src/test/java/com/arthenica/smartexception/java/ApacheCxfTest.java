@@ -77,4 +77,36 @@ public class ApacheCxfTest {
         }
     }
 
+    @Test
+    public void accessAndPrintPackageInformation() {
+        Client client = ClientBuilder.newBuilder().build();
+        WebTarget target = client.target("http://localhost:12345/rs");
+        target = target.path("service").queryParam("param1", "value1");
+
+        Invocation.Builder builder = target.request();
+        try {
+            builder.get();
+        } catch (Exception e) {
+            String expectedStackTrace = "\n" +
+                    "javax.ws.rs.ProcessingException: java.net.ConnectException: ConnectException invoking http://localhost:12345/rs/service?param1=value1: Connection refused (Connection refused)\n" +
+                    "\tat org.apache.cxf ... 10 more [cxf-rt-rs-client-3.3.6.jar]\n" +
+                    "\tat com.arthenica.smartexception.java.ApacheCxfTest.accessAndPrintPackageInformation(ApacheCxfTest.java:88)\n" +
+                    "Caused by: java.net.ConnectException: ConnectException invoking http://localhost:12345/rs/service?param1=value1: Connection refused (Connection refused)\n" +
+                    "\tat jdk.internal.reflect ... 2 more\n" +
+                    "\tat java.lang.reflect.Constructor.newInstance(Constructor.java:488)\n" +
+                    "\tat org.apache.cxf ... 15 more [cxf-rt-transports-http-3.3.6.jar]\n" +
+                    "\tat com.arthenica.smartexception.java.ApacheCxfTest.accessAndPrintPackageInformation(ApacheCxfTest.java:88)\n" +
+                    "Caused by: java.net.ConnectException: Connection refused (Connection refused)\n" +
+                    "\tat java.net ... 4 more\n" +
+                    "\tat sun.net ... 11 more\n" +
+                    "\tat java.net.HttpURLConnection.getResponseCode(HttpURLConnection.java:527)\n" +
+                    "\tat org.apache.cxf ... 1 more [cxf-rt-transports-http-3.3.6.jar]\n" +
+                    "\tat java.security.AccessController.doPrivileged(Native Method)\n" +
+                    "\tat org.apache.cxf ... 18 more [cxf-rt-transports-http-3.3.6.jar]\n" +
+                    "\tat com.arthenica.smartexception.java.ApacheCxfTest.accessAndPrintPackageInformation(ApacheCxfTest.java:88)";
+
+            Assert.assertEquals(ExceptionsTest.trimDynamicParts(expectedStackTrace), ExceptionsTest.trimDynamicParts(Exceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), new HashSet<>(Arrays.asList("org.apache.cxf", "java.net", "java.security", "sun.net", "jdk.internal.reflect")), new HashSet<String>(), false, true)));
+        }
+    }
+
 }
