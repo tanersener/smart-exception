@@ -1,0 +1,29 @@
+name: build and test
+
+on:
+  push:
+    branches:
+      - development
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-on-linux:
+    name: build and test on linux
+    runs-on: ubuntu-20.04
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v2
+      - name: set up jdk
+        uses: actions/setup-java@v2.2.0
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+      - name: validate gradle wrapper
+        uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
+      - name: build with gradle
+        run: ./gradlew clean build
