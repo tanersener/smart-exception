@@ -810,7 +810,7 @@ public abstract class AbstractExceptions {
      * @param packageName   package
      * @return implementation version specified for the given package or null if a version is not specified
      */
-    public static String getVersion(final PackageLoader packageLoader, final Class<?> type, final String packageName) {
+    public static String version(final PackageLoader packageLoader, final Class<?> type, final String packageName) {
         try {
             Package loadedPackage = type.getPackage();
             if (loadedPackage != null) {
@@ -857,6 +857,42 @@ public abstract class AbstractExceptions {
         }
 
         return null;
+    }
+
+    /**
+     * <p>Builds package information using the libraryName and version provided.
+     *
+     * @param libraryName libraryName
+     * @param version     version
+     * @return package information string
+     */
+    public static String packageInformation(final String libraryName, final String version) {
+        final boolean hasLibraryName = libraryName != null;
+        final boolean hasVersion = version != null;
+
+        if (hasLibraryName || hasVersion) {
+            final StringBuilder stringBuilder = new StringBuilder();
+
+            stringBuilder.append(" [");
+            if (hasLibraryName) {
+                stringBuilder.append(libraryName);
+            }
+            if (hasVersion) {
+                if (hasLibraryName) {
+                    if (!libraryName.contains(version)) {
+                        stringBuilder.append(":");
+                        stringBuilder.append(version);
+                    }
+                } else {
+                    stringBuilder.append(version);
+                }
+            }
+            stringBuilder.append("]");
+
+            return stringBuilder.toString();
+        } else {
+            return "";
+        }
     }
 
 }

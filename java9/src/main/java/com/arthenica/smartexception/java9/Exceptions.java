@@ -107,19 +107,9 @@ public class Exceptions {
                 Class<?> loadedClass = Exceptions.classLoader.loadClass(className);
                 if (loadedClass != null) {
                     final String libraryName = AbstractExceptions.libraryName(loadedClass);
-                    final String version = AbstractExceptions.getVersion(Exceptions.packageLoader, loadedClass, AbstractExceptions.packageName(className));
+                    final String version = AbstractExceptions.version(Exceptions.packageLoader, loadedClass, AbstractExceptions.packageName(className));
 
-                    if ((libraryName != null) || (version != null)) {
-                        stringBuilder.append(" [");
-                        stringBuilder.append(libraryName);
-                        if ((libraryName != null) && (version != null)) {
-                            if (!libraryName.contains(version)) {
-                                stringBuilder.append(":");
-                                stringBuilder.append(version);
-                            }
-                        }
-                        stringBuilder.append("]");
-                    }
+                    stringBuilder.append(AbstractExceptions.packageInformation(libraryName, version));
                 }
 
                 return stringBuilder.toString();

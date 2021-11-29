@@ -57,12 +57,13 @@ subprojects {
     }
 
     ext {
-        cxfVersion = '3.3.6'
-        springBootVersion = '2.2.6.RELEASE'
-        mockitoVersion = '3.3.3'
-        slf4jVersion = '1.7.30'
-        logbackVersion = '1.2.3'
-        junitVersion = '4.13'
+        cxfVersion = '3.4.5'
+        springBootVersion = '2.2.13.RELEASE'
+        mockitoVersion = '3.12.4'
+        slf4jVersion = '1.7.32'
+        logbackVersion = '1.2.7'
+        junitVersion = '4.13.2'
+        commonsCodecVersion = '1.15'
 
         // release properties
         bintrayRepo = 'maven'
@@ -91,6 +92,7 @@ subprojects {
         testImplementation 'org.slf4j:slf4j-api:' + slf4jVersion
         testImplementation 'ch.qos.logback:logback-classic:' + logbackVersion
         testImplementation 'junit:junit:' + junitVersion
+        testImplementation 'commons-codec:commons-codec:' + commonsCodecVersion
     }
 
     repositories {

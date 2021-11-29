@@ -51,4 +51,19 @@ public class AbstractExceptionsTest {
         Assert.assertEquals("", AbstractExceptions.packageName("String"));
     }
 
+    @Test
+    public void packageInformation() {
+        assertPackageInformation(null, null, "");
+        assertPackageInformation(null, "1.2.3", " [1.2.3]");
+        assertPackageInformation("mylib.jar", null, " [mylib.jar]");
+        assertPackageInformation("mylib-1.2.3.jar", null, " [mylib-1.2.3.jar]");
+        assertPackageInformation("mylib.jar", "1.2.3", " [mylib.jar:1.2.3]");
+        assertPackageInformation("mylib-1.2.3.jar", "1.2.3", " [mylib-1.2.3.jar]");
+    }
+
+    private void assertPackageInformation(final String libraryName, final String version, final String expectedPackageInformation) {
+        String packageInformation = AbstractExceptions.packageInformation(libraryName, version);
+        Assert.assertEquals(expectedPackageInformation, packageInformation);
+    }
+
 }

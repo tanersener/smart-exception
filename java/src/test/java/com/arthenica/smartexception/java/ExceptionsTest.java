@@ -532,8 +532,8 @@ public class ExceptionsTest {
         RuntimeException runtimeException = new RuntimeException("Fail!");
 
         StackTraceElement stackTraceElement = Arrays.asList(AbstractExceptions.getStackTrace(runtimeException, 6)).get(5);
-        Assert.assertEquals("junit-4.13.jar", libraryName(stackTraceElement));
-        Assert.assertEquals("4.13", version(stackTraceElement));
+        Assert.assertEquals("junit-4.13.2.jar", libraryName(stackTraceElement));
+        Assert.assertEquals("4.13.2", version(stackTraceElement));
     }
 
     @Test
@@ -544,8 +544,8 @@ public class ExceptionsTest {
             StackTraceElement[] stackTrace = AbstractExceptions.getStackTrace(exception, 10);
 
             StackTraceElement stackTraceElement = Arrays.asList(stackTrace).get(0);
-            Assert.assertEquals("commons-codec-1.10.jar", libraryName(stackTraceElement));
-            Assert.assertEquals("1.10", version(stackTraceElement));
+            Assert.assertEquals("commons-codec-1.15.jar", libraryName(stackTraceElement));
+            Assert.assertEquals("1.15", version(stackTraceElement));
         }
     }
 
@@ -570,8 +570,8 @@ public class ExceptionsTest {
             StackTraceElement[] stackTrace = AbstractExceptions.getStackTrace(exception, 10);
 
             StackTraceElement stackTraceElement = Arrays.asList(stackTrace).get(0);
-            Assert.assertEquals("jackson-databind-2.10.3.jar", libraryName(stackTraceElement));
-            Assert.assertEquals("2.10.3", version(stackTraceElement));
+            Assert.assertEquals("jackson-databind-2.10.5.1.jar", libraryName(stackTraceElement));
+            Assert.assertEquals("2.10.5.1", version(stackTraceElement));
         }
     }
 
@@ -589,7 +589,7 @@ public class ExceptionsTest {
         String className = stackTraceElement.getClassName();
         Class<?> loadedClass = Exceptions.classLoader.loadClass(className);
         if (loadedClass != null) {
-            return AbstractExceptions.getVersion(Exceptions.packageLoader, loadedClass, AbstractExceptions.packageName(className));
+            return AbstractExceptions.version(Exceptions.packageLoader, loadedClass, AbstractExceptions.packageName(className));
         } else {
             return null;
         }
