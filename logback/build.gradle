@@ -1,10 +1,13 @@
 import java.text.SimpleDateFormat
 
-sourceCompatibility = JavaVersion.VERSION_1_7
-targetCompatibility = JavaVersion.VERSION_1_7
+sourceCompatibility = JavaVersion.VERSION_1_9
+targetCompatibility = JavaVersion.VERSION_1_9
 
 dependencies {
-    api project(":smart-exception-common")
+    api project(":smart-exception-java9")
+    compileOnly('ch.qos.logback:logback-core:' + logbackVersion)
+    compileOnly('ch.qos.logback:logback-classic:' + logbackVersion)
+    testImplementation('net.logstash.logback:logstash-logback-encoder:' + logstashLogbackEncoderVersion)
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
@@ -29,12 +32,12 @@ artifacts {
 apply plugin: 'maven'
 apply plugin: 'signing'
 
-archivesBaseName = "smart-exception-java"
+archivesBaseName = "smart-exception-logback"
 
 ext {
-    libraryName = "smart-exception-java"
-    artifact = "smart-exception-java"
-    libraryDescription = "smart-exception java and android package"
+    libraryName = "smart-exception-logback"
+    artifact = "smart-exception-logback"
+    libraryDescription = "smart-exception logback package"
     libraryVersion = version
 }
 

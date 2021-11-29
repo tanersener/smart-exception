@@ -21,7 +21,7 @@ subprojects {
                     'Build-Timestamp': new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ").format(new Date()),
                     'Created-By': "Gradle ${gradle.gradleVersion}",
                     'Build-Jdk': System.getProperty('java.version'),
-                    'Implementation-Version': version
+                    'Implementation-Version': archiveVersion
             )
         }
     }
@@ -34,7 +34,7 @@ subprojects {
                     'Build-Timestamp': new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ").format(new Date()),
                     'Created-By': "Gradle ${gradle.gradleVersion}",
                     'Build-Jdk': System.getProperty('java.version'),
-                    'Implementation-Version': version
+                    'Implementation-Version': archiveVersion
             )
         }
     }
@@ -64,6 +64,7 @@ subprojects {
         logbackVersion = '1.2.7'
         junitVersion = '4.13.2'
         commonsCodecVersion = '1.15'
+        logstashLogbackEncoderVersion = '7.0.1'
 
         // release properties
         bintrayRepo = 'maven'

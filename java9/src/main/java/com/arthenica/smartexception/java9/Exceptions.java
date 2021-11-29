@@ -32,10 +32,8 @@
 
 package com.arthenica.smartexception.java9;
 
-import com.arthenica.smartexception.AbstractExceptions;
 import com.arthenica.smartexception.ClassLoader;
-import com.arthenica.smartexception.PackageLoader;
-import com.arthenica.smartexception.StackTraceElementSerializer;
+import com.arthenica.smartexception.*;
 
 import java.util.Set;
 
@@ -281,7 +279,7 @@ public class Exceptions {
      * @return a string containing the smart stack trace for the given <code>throwable</code>
      */
     public static String getStackTraceString(final Throwable throwable) {
-        return AbstractExceptions.getStackTraceString(throwable);
+        return AbstractExceptions.getStackTraceString(new ThrowableWrapper(throwable));
     }
 
     /**
@@ -296,7 +294,7 @@ public class Exceptions {
      * @return a string containing the smart stack trace for the given <code>throwable</code>
      */
     public static String getStackTraceString(final Throwable throwable, final boolean ignoreAllCauses) {
-        return AbstractExceptions.getStackTraceString(throwable, ignoreAllCauses);
+        return AbstractExceptions.getStackTraceString(new ThrowableWrapper(throwable), ignoreAllCauses);
     }
 
     /**
@@ -309,7 +307,7 @@ public class Exceptions {
      * @return a string containing the smart stack trace for the given <code>throwable</code>
      */
     public static String getStackTraceString(final Throwable throwable, final Set<String> rootPackageSet, final Set<String> groupPackageSet, final Set<String> ignorePackageSet) {
-        return AbstractExceptions.getStackTraceString(throwable, rootPackageSet, groupPackageSet, ignorePackageSet);
+        return AbstractExceptions.getStackTraceString(new ThrowableWrapper(throwable), rootPackageSet, groupPackageSet, ignorePackageSet);
     }
 
     /**
@@ -323,7 +321,7 @@ public class Exceptions {
      * @return a string containing the smart stack trace for the given <code>throwable</code>
      */
     public static String getStackTraceString(final Throwable throwable, final Set<String> rootPackageSet, final Set<String> groupPackageSet, final Set<String> ignorePackageSet, final boolean ignoreAllCauses) {
-        return AbstractExceptions.getStackTraceString(throwable, rootPackageSet, groupPackageSet, ignorePackageSet, ignoreAllCauses);
+        return AbstractExceptions.getStackTraceString(new ThrowableWrapper(throwable), rootPackageSet, groupPackageSet, ignorePackageSet, ignoreAllCauses);
     }
 
     /**
@@ -338,7 +336,7 @@ public class Exceptions {
      * @return a string containing the smart stack trace for the given <code>throwable</code>
      */
     public static String getStackTraceString(final Throwable throwable, final Set<String> rootPackageSet, final Set<String> groupPackageSet, final Set<String> ignorePackageSet, final boolean ignoreAllCauses, final boolean printPackageInformation) {
-        return AbstractExceptions.getStackTraceString(throwable, rootPackageSet, groupPackageSet, ignorePackageSet, ignoreAllCauses, printPackageInformation);
+        return AbstractExceptions.getStackTraceString(new ThrowableWrapper(throwable), rootPackageSet, groupPackageSet, ignorePackageSet, ignoreAllCauses, printPackageInformation);
     }
 
     /**
@@ -349,7 +347,7 @@ public class Exceptions {
      * @return a string containing the smart stack trace for the given <code>throwable</code>
      */
     public static String getStackTraceString(final Throwable throwable, final String rootPackage) {
-        return AbstractExceptions.getStackTraceString(throwable, rootPackage);
+        return AbstractExceptions.getStackTraceString(new ThrowableWrapper(throwable), rootPackage);
     }
 
     /**
@@ -361,7 +359,7 @@ public class Exceptions {
      * @return a string containing the smart stack trace for the given <code>throwable</code>
      */
     public static String getStackTraceString(final Throwable throwable, final String rootPackage, final String groupPackage) {
-        return AbstractExceptions.getStackTraceString(throwable, rootPackage, groupPackage);
+        return AbstractExceptions.getStackTraceString(new ThrowableWrapper(throwable), rootPackage, groupPackage);
     }
 
     /**
@@ -372,7 +370,7 @@ public class Exceptions {
      * @return a string containing the smart stack trace for the given <code>throwable</code>
      */
     public static String getStackTraceString(final Throwable throwable, final int maxDepth) {
-        return AbstractExceptions.getStackTraceString(throwable, maxDepth);
+        return AbstractExceptions.getStackTraceString(new ThrowableWrapper(throwable), maxDepth);
     }
 
     /**
@@ -384,7 +382,7 @@ public class Exceptions {
      * @return a string containing the smart stack trace for the given <code>throwable</code>
      */
     public static String getStackTraceString(final Throwable throwable, final int maxDepth, final boolean ignoreAllCauses) {
-        return AbstractExceptions.getStackTraceString(throwable, maxDepth, ignoreAllCauses);
+        return AbstractExceptions.getStackTraceString(new ThrowableWrapper(throwable), maxDepth, ignoreAllCauses);
     }
 
     /**
@@ -397,7 +395,7 @@ public class Exceptions {
      * @return a string containing the smart stack trace for the given <code>throwable</code>
      */
     public static String getStackTraceString(final Throwable throwable, final int maxDepth, final boolean ignoreAllCauses, final boolean printPackageInformation) {
-        return AbstractExceptions.getStackTraceString(throwable, maxDepth, ignoreAllCauses, printPackageInformation);
+        return AbstractExceptions.getStackTraceString(new ThrowableWrapper(throwable), maxDepth, ignoreAllCauses, printPackageInformation);
     }
 
     /**

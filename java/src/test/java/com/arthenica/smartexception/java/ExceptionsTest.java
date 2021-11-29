@@ -33,6 +33,7 @@
 package com.arthenica.smartexception.java;
 
 import com.arthenica.smartexception.AbstractExceptions;
+import com.arthenica.smartexception.ThrowableWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.DecoderException;
@@ -43,7 +44,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import javax.management.MBeanException;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.security.DigestException;
@@ -407,7 +407,7 @@ public class ExceptionsTest {
         String randomFileNumber = String.format("random-file-%d.log", System.currentTimeMillis());
 
         try {
-            new FileInputStream(new File(randomFileNumber));
+            new FileInputStream(randomFileNumber);
         } catch (FileNotFoundException e) {
             Assert.assertTrue(Exceptions.containsCause(e, FileNotFoundException.class));
         }
@@ -531,7 +531,7 @@ public class ExceptionsTest {
     public void packageInformationJunit() {
         RuntimeException runtimeException = new RuntimeException("Fail!");
 
-        StackTraceElement stackTraceElement = Arrays.asList(AbstractExceptions.getStackTrace(runtimeException, 6)).get(5);
+        StackTraceElement stackTraceElement = Arrays.asList(AbstractExceptions.getStackTrace(new ThrowableWrapper(runtimeException), 6)).get(5);
         Assert.assertEquals("junit-4.13.2.jar", libraryName(stackTraceElement));
         Assert.assertEquals("4.13.2", version(stackTraceElement));
     }
@@ -541,7 +541,7 @@ public class ExceptionsTest {
         try {
             Hex.decodeHex("12345".toCharArray());
         } catch (DecoderException exception) {
-            StackTraceElement[] stackTrace = AbstractExceptions.getStackTrace(exception, 10);
+            StackTraceElement[] stackTrace = AbstractExceptions.getStackTrace(new ThrowableWrapper(exception), 10);
 
             StackTraceElement stackTraceElement = Arrays.asList(stackTrace).get(0);
             Assert.assertEquals("commons-codec-1.15.jar", libraryName(stackTraceElement));
@@ -554,7 +554,7 @@ public class ExceptionsTest {
         try {
             new JSONArray("");
         } catch (JSONException exception) {
-            StackTraceElement[] stackTrace = AbstractExceptions.getStackTrace(exception, 10);
+            StackTraceElement[] stackTrace = AbstractExceptions.getStackTrace(new ThrowableWrapper(exception), 10);
 
             StackTraceElement stackTraceElement = Arrays.asList(stackTrace).get(0);
             Assert.assertEquals("android-json-0.0.20131108.vaadin1.jar", libraryName(stackTraceElement));
@@ -567,7 +567,7 @@ public class ExceptionsTest {
         try {
             new ObjectMapper().readValue("", Long.class);
         } catch (JsonProcessingException exception) {
-            StackTraceElement[] stackTrace = AbstractExceptions.getStackTrace(exception, 10);
+            StackTraceElement[] stackTrace = AbstractExceptions.getStackTrace(new ThrowableWrapper(exception), 10);
 
             StackTraceElement stackTraceElement = Arrays.asList(stackTrace).get(0);
             Assert.assertEquals("jackson-databind-2.10.5.1.jar", libraryName(stackTraceElement));

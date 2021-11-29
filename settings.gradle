@@ -1,7 +1,8 @@
 rootProject.name = 'smart-exception'
-include ':common', ':java', ':java9', ':test:java', ':test:java9'
+include ':common', ':java', ':java9', ':logback', ':test:java', ':test:java9'
 project(":common").name = "smart-exception-common"
 project(":java").name = "smart-exception-java"
 project(":java9").name = "smart-exception-java9"
+project(":logback").name = "smart-exception-logback"
 project(":test:java").name = "smart-exception-test-java"
 project(":test:java9").name = "smart-exception-test-java9"
