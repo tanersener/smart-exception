@@ -62,7 +62,7 @@ public class SpringTest {
     @Test
     public void getUserTest() {
         try {
-            Exceptions.setIgnoreModuleName(true);
+            Exceptions.setPrintModuleName(false);
             mvc.perform(MockMvcRequestBuilders.get("/user")).andExpect(status().isOk());
         } catch (Exception e) {
             String expectedStackTrace = "\n" +
@@ -79,7 +79,7 @@ public class SpringTest {
 
             Assert.assertEquals(ExceptionsTest.trimDynamicParts(expectedStackTrace), ExceptionsTest.trimDynamicParts(Exceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), Collections.singleton("org.springframework"), new HashSet<>(Arrays.asList("sun.net", "sun.security", "sun.reflect", "java.lang.reflect", "javax.servlet.http")))));
         } finally {
-            Exceptions.setIgnoreModuleName(false);
+            Exceptions.setPrintModuleName(true);
         }
     }
 
@@ -135,7 +135,7 @@ public class SpringTest {
                     "\tat org.springframework ... 14 more [spring-web-5.2.12.RELEASE.jar]\n" +
                     "\tat com.arthenica.smartexception.java9.SpringTest.getStackTraceWithMaxDepthAndPrintPackageInformation(SpringTest.java:121)";
 
-            Assert.assertEquals(ExceptionsTest.trimDynamicParts(expectedStackTrace), ExceptionsTest.trimDynamicParts(Exceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), new HashSet<String>(Collections.singleton("org.springframework")), new HashSet<>(Arrays.asList("sun.net", "sun.security", "sun.reflect", "java.lang.reflect", "javax.servlet.http")), false, true)));
+            Assert.assertEquals(ExceptionsTest.trimDynamicParts(expectedStackTrace), ExceptionsTest.trimDynamicParts(Exceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), new HashSet<>(Collections.singleton("org.springframework")), new HashSet<>(Arrays.asList("sun.net", "sun.security", "sun.reflect", "java.lang.reflect", "javax.servlet.http")), false, true)));
         }
     }
 

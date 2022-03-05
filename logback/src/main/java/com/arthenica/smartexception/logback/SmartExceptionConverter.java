@@ -59,7 +59,7 @@ public class SmartExceptionConverter extends ThrowableHandlingConverter {
 
     public static final String OPTION_VALUE_IGNORE_CAUSES = "ignoreCauses";
 
-    public static final String OPTION_VALUE_IGNORE_MODULE_NAME = "ignoreModuleName";
+    public static final String OPTION_VALUE_PRINT_MODULE_NAME = "printModuleName";
 
     public static final String OPTION_VALUE_MAX_DEPTH = "maxDepth";
 
@@ -113,8 +113,8 @@ public class SmartExceptionConverter extends ThrowableHandlingConverter {
                         ignoreCauses = parseBooleanOption(split[1]);
                     }
                     break;
-                    case OPTION_VALUE_IGNORE_MODULE_NAME: {
-                        Exceptions.setIgnoreModuleName(parseBooleanOption(split[1]));
+                    case OPTION_VALUE_PRINT_MODULE_NAME: {
+                        Exceptions.setPrintModuleName(parseBooleanOption(split[1]));
                     }
                     break;
                     case OPTION_VALUE_MAX_DEPTH: {

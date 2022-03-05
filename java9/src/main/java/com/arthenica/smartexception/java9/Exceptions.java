@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2020-2021, Taner Sener
+ * Copyright (c) 2020-2022, Taner Sener
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -47,16 +47,16 @@ import java.util.Set;
 public class Exceptions {
 
     /**
-     * <p>Default value for ignoring module name when stack trace elements are printed or converted to string.
+     * <p>Default value for printing module name when stack trace elements are printed or converted to string.
      */
-    public static final boolean DEFAULT_IGNORE_MODULE_NAME = false;
+    public static final boolean DEFAULT_PRINT_MODULE_NAME = true;
 
     /**
-     * <p>Stores the value of global ignore module name option. If value is true then stack trace elements printed or
-     * converted to string will include module name at the beginning of the line. Otherwise module name will be
+     * <p>Stores the value of global print module name option. If value is false then stack trace elements printed or
+     * converted to string will include module name at the beginning of the line. Otherwise, module name will be
      * ignored.
      */
-    protected static boolean ignoreModuleName = DEFAULT_IGNORE_MODULE_NAME;
+    protected static boolean printModuleName = DEFAULT_PRINT_MODULE_NAME;
 
     static {
         packageLoader = new Java9PackageLoader();
@@ -68,7 +68,7 @@ public class Exceptions {
             public String toString(final StackTraceElement stackTraceElement, final boolean printPackageInformation) {
                 final StringBuilder stringBuilder = new StringBuilder();
 
-                if (!ignoreModuleName && !AbstractExceptions.isEmpty(stackTraceElement.getModuleName())) {
+                if (printModuleName && !AbstractExceptions.isEmpty(stackTraceElement.getModuleName())) {
                     stringBuilder.append(getModuleName(stackTraceElement));
                 }
 
@@ -135,21 +135,21 @@ public class Exceptions {
     static ClassLoader classLoader;
 
     /**
-     * <p>Returns the value of ignore module name option.
+     * <p>Returns the value of print module name option.
      *
-     * @return the value of global ignore module name option
+     * @return the value of global print module name option
      */
-    public static boolean getIgnoreModuleName() {
-        return ignoreModuleName;
+    public static boolean getPrintModuleName() {
+        return printModuleName;
     }
 
     /**
-     * <p>Sets the value of ignore module name option.
+     * <p>Sets the value of print module name option.
      *
-     * @param ignoreModuleName new global ignore module name option
+     * @param printModuleName new global print module name option
      */
-    public static void setIgnoreModuleName(final boolean ignoreModuleName) {
-        Exceptions.ignoreModuleName = ignoreModuleName;
+    public static void setPrintModuleName(final boolean printModuleName) {
+        Exceptions.printModuleName = printModuleName;
     }
 
     /**
