@@ -37,7 +37,6 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.core.CoreConstants;
 import com.arthenica.smartexception.AbstractExceptions;
-import com.arthenica.smartexception.java9.Exceptions;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -71,7 +70,9 @@ public class SmartExceptionConverter extends ThrowableHandlingConverter {
 
     private final Set<String> ignorePackageSet = new LinkedHashSet<>();
 
-    private boolean ignoreCauses = AbstractExceptions.ignoreAllCauses;
+    private boolean ignoreCauses = AbstractExceptions.DEFAULT_IGNORE_ALL_CAUSES;
+
+    private boolean printModuleName = AbstractExceptions.DEFAULT_PRINT_MODULE_NAME;
 
     private int maxDepth = 0;
 
@@ -114,7 +115,7 @@ public class SmartExceptionConverter extends ThrowableHandlingConverter {
                     }
                     break;
                     case OPTION_VALUE_PRINT_MODULE_NAME: {
-                        Exceptions.setPrintModuleName(parseBooleanOption(split[1]));
+                        printModuleName = parseBooleanOption(split[1]);
                     }
                     break;
                     case OPTION_VALUE_MAX_DEPTH: {
@@ -153,7 +154,7 @@ public class SmartExceptionConverter extends ThrowableHandlingConverter {
             return CoreConstants.EMPTY_STRING;
         }
 
-        return AbstractExceptions.getStackTraceString(ThrowableWrapperConverter.toThrowableWrapper(throwableProxy), false, rootPackageSet, groupPackageSet, ignorePackageSet, maxDepth, ignoreCauses, printPackageInformation);
+        return AbstractExceptions.getStackTraceString(ThrowableWrapperConverter.toThrowableWrapper(throwableProxy), false, rootPackageSet, groupPackageSet, ignorePackageSet, printModuleName, maxDepth, ignoreCauses, printPackageInformation);
     }
 
 }

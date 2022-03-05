@@ -35,6 +35,8 @@ package com.arthenica.smartexception;
 /**
  * <p>Base interface for classes which can serialize {@link StackTraceElement} objects.
  *
+ * <p><code>printModuleName</code> option support added in v0.2.0.
+ *
  * @author Taner Sener
  * @since 0.1.0
  */
@@ -44,10 +46,11 @@ public interface StackTraceElementSerializer {
      * <p>Converts the given <code>stackTraceElement</code> into a string.
      *
      * @param stackTraceElement       stack trace element to convert
+     * @param printModuleName         print module name
      * @param printPackageInformation print package information
      * @return string representing the given <code>stackTraceElement</code>
      */
-    String toString(final StackTraceElement stackTraceElement, final boolean printPackageInformation);
+    String toString(final StackTraceElement stackTraceElement, final boolean printModuleName, final boolean printPackageInformation);
 
     /**
      * <p>Returns package information for the given <code>stackTraceElement</code>.

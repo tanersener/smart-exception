@@ -62,39 +62,69 @@ public abstract class AbstractExceptions {
     public static final boolean DEFAULT_PRINT_PACKAGE_INFORMATION = false;
 
     /**
+     * <p>Default value for printing module name when stack trace elements are printed or converted to string.
+     */
+    public static final boolean DEFAULT_PRINT_MODULE_NAME = true;
+
+    /**
      * <p>Stores global root package names.
      */
-    public static final Set<String> rootPackageSet = Collections.synchronizedSet(new HashSet<String>());
+    static final Set<String> rootPackageSet = Collections.synchronizedSet(new HashSet<String>());
 
     /**
      * <p>Stores global group package names.
      */
-    public static final Set<String> groupPackageSet = Collections.synchronizedSet(new HashSet<String>());
+    static final Set<String> groupPackageSet = Collections.synchronizedSet(new HashSet<String>());
 
     /**
      * <p>Stores global ignore package names.
      */
-    public static final Set<String> ignorePackageSet = Collections.synchronizedSet(new HashSet<String>());
+    static final Set<String> ignorePackageSet = Collections.synchronizedSet(new HashSet<String>());
 
     /**
      * <p>Stores global ignore cause package names.
      */
-    public static final Set<String> ignoreCausePackageSet = Collections.synchronizedSet(new HashSet<String>());
+    static final Set<String> ignoreCausePackageSet = Collections.synchronizedSet(new HashSet<String>());
 
     /**
      * <p>Stores the value of global ignore all causes option.
      */
-    public static boolean ignoreAllCauses = DEFAULT_IGNORE_ALL_CAUSES;
+    static boolean ignoreAllCauses = DEFAULT_IGNORE_ALL_CAUSES;
 
     /**
      * <p>Stores the global stack trace serializer implementation.
      */
-    public static StackTraceElementSerializer stackTraceElementSerializer;
+    static StackTraceElementSerializer stackTraceElementSerializer;
 
     /**
      * <p>Stores the global print package information option.
      */
-    public static boolean printPackageInformation = DEFAULT_PRINT_PACKAGE_INFORMATION;
+    static boolean printPackageInformation = DEFAULT_PRINT_PACKAGE_INFORMATION;
+
+    /**
+     * <p>Stores the value of global print module name option. If value is false then stack trace elements printed or
+     * converted to string will include module name at the beginning of the line. Otherwise, module name will be
+     * ignored.
+     */
+    static boolean printModuleName = DEFAULT_PRINT_MODULE_NAME;
+
+    /**
+     * <p>Returns the value of print module name option.
+     *
+     * @return the value of global print module name option
+     */
+    public static boolean getPrintModuleName() {
+        return printModuleName;
+    }
+
+    /**
+     * <p>Sets the value of print module name option.
+     *
+     * @param printModuleName new global print module name option
+     */
+    public static void setPrintModuleName(final boolean printModuleName) {
+        AbstractExceptions.printModuleName = printModuleName;
+    }
 
     /**
      * <p>Registers a new root package.
@@ -360,6 +390,24 @@ public abstract class AbstractExceptions {
      * @return a string containing the smart stack trace for the given <code>throwable</code>
      */
     public static String getStackTraceString(final ThrowableWrapper throwable, final boolean isCause, final Set<String> rootPackageSet, final Set<String> groupPackageSet, final Set<String> ignorePackageSet, final int maxDepth, final boolean ignoreAllCauses, final boolean printPackageInformation) {
+        return getStackTraceString(throwable, isCause, rootPackageSet, groupPackageSet, ignorePackageSet, printModuleName, maxDepth, ignoreAllCauses, printPackageInformation);
+    }
+
+    /**
+     * <p>Returns the smart stack trace for the given <code>throwable</code> using parameters provided.
+     *
+     * @param throwable               parent throwable
+     * @param isCause                 throwable is a cause or not
+     * @param rootPackageSet          root packages to use for building the stack trace
+     * @param groupPackageSet         group packages to use for building the stack trace
+     * @param ignorePackageSet        ignore packages to use for building the stack trace
+     * @param printModuleName         prints module name in log statement
+     * @param maxDepth                max depth in exception chain that will be used
+     * @param ignoreAllCauses         ignore all causes in the exception chain
+     * @param printPackageInformation print package information
+     * @return a string containing the smart stack trace for the given <code>throwable</code>
+     */
+    public static String getStackTraceString(final ThrowableWrapper throwable, final boolean isCause, final Set<String> rootPackageSet, final Set<String> groupPackageSet, final Set<String> ignorePackageSet, final boolean printModuleName, final int maxDepth, final boolean ignoreAllCauses, final boolean printPackageInformation) {
         final StringBuilder builder = new StringBuilder();
 
         if (throwable == null) {
@@ -407,7 +455,7 @@ public abstract class AbstractExceptions {
 
             if (groupPackageMatch != null) {
                 if (!groupPackageMatch.equals(currentGroupPackage)) {
-                    appendStackTraceGroupElement(builder, currentGroupPackage, currentGroupCount, firstStackTraceElementInTheGroup, printPackageInformation);
+                    appendStackTraceGroupElement(builder, currentGroupPackage, currentGroupCount, firstStackTraceElementInTheGroup, printModuleName, printPackageInformation);
 
                     builder.append(System.lineSeparator());
                     builder.append("\tat ");
@@ -419,24 +467,24 @@ public abstract class AbstractExceptions {
                     currentGroupCount++;
                 }
             } else {
-                currentGroupCount = appendStackTraceGroupElement(builder, currentGroupPackage, currentGroupCount, firstStackTraceElementInTheGroup, printPackageInformation);
+                currentGroupCount = appendStackTraceGroupElement(builder, currentGroupPackage, currentGroupCount, firstStackTraceElementInTheGroup, printModuleName, printPackageInformation);
 
                 builder.append(System.lineSeparator());
                 builder.append("\tat ");
                 if (stackTraceElementSerializer == null) {
                     throw new IllegalArgumentException("Stack trace element serializer not initialized.");
                 } else {
-                    builder.append(stackTraceElementSerializer.toString(traceElement, printPackageInformation));
+                    builder.append(stackTraceElementSerializer.toString(traceElement, printModuleName, printPackageInformation));
                 }
                 currentGroupPackage = null;
             }
         }
 
-        appendStackTraceGroupElement(builder, currentGroupPackage, currentGroupCount, firstStackTraceElementInTheGroup, printPackageInformation);
+        appendStackTraceGroupElement(builder, currentGroupPackage, currentGroupCount, firstStackTraceElementInTheGroup, printModuleName, printPackageInformation);
 
         final ThrowableWrapper cause = throwable.getCause();
         if (cause != null && !containsPackage(className, ignoreCausePackageSet) && !ignoreAllCauses) {
-            builder.append(getStackTraceString(cause, true, rootPackageSet, groupPackageSet, ignorePackageSet, maxDepth, ignoreAllCauses, printPackageInformation));
+            builder.append(getStackTraceString(cause, true, rootPackageSet, groupPackageSet, ignorePackageSet, printModuleName, maxDepth, ignoreAllCauses, printPackageInformation));
         }
 
         return builder.toString();
@@ -449,16 +497,17 @@ public abstract class AbstractExceptions {
      * @param currentGroupPackage               package name of the current group
      * @param numberOfElementsInTheCurrentGroup number of elements in the current group
      * @param firstStackTraceElementInTheGroup  first stack trace element of this group
+     * @param printModuleName                   prints module name in log statement
      * @param printPackageInformation           print package information
      * @return new value for the group element count
      */
-    public static int appendStackTraceGroupElement(final StringBuilder stringBuilder, final String currentGroupPackage, final int numberOfElementsInTheCurrentGroup, final StackTraceElement firstStackTraceElementInTheGroup, final boolean printPackageInformation) {
+    public static int appendStackTraceGroupElement(final StringBuilder stringBuilder, final String currentGroupPackage, final int numberOfElementsInTheCurrentGroup, final StackTraceElement firstStackTraceElementInTheGroup, final boolean printModuleName, final boolean printPackageInformation) {
         if (numberOfElementsInTheCurrentGroup > 0) {
             if (stackTraceElementSerializer == null) {
                 throw new IllegalArgumentException("Stack trace element serializer not initialized.");
             } else {
                 if (numberOfElementsInTheCurrentGroup == 1) {
-                    stringBuilder.append(stackTraceElementSerializer.toString(firstStackTraceElementInTheGroup, printPackageInformation));
+                    stringBuilder.append(stackTraceElementSerializer.toString(firstStackTraceElementInTheGroup, printModuleName, printPackageInformation));
                 } else {
                     stringBuilder.append(String.format("%s%s ... %d more", stackTraceElementSerializer.getModuleName(firstStackTraceElementInTheGroup), currentGroupPackage, (numberOfElementsInTheCurrentGroup - 1)));
                     if (printPackageInformation) {

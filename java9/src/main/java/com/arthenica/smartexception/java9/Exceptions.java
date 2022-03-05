@@ -46,18 +46,6 @@ import java.util.Set;
  */
 public class Exceptions {
 
-    /**
-     * <p>Default value for printing module name when stack trace elements are printed or converted to string.
-     */
-    public static final boolean DEFAULT_PRINT_MODULE_NAME = true;
-
-    /**
-     * <p>Stores the value of global print module name option. If value is false then stack trace elements printed or
-     * converted to string will include module name at the beginning of the line. Otherwise, module name will be
-     * ignored.
-     */
-    protected static boolean printModuleName = DEFAULT_PRINT_MODULE_NAME;
-
     static {
         packageLoader = new Java9PackageLoader();
         classLoader = new Java9ClassLoader();
@@ -65,7 +53,7 @@ public class Exceptions {
         AbstractExceptions.setStackTraceElementSerializer(new StackTraceElementSerializer() {
 
             @Override
-            public String toString(final StackTraceElement stackTraceElement, final boolean printPackageInformation) {
+            public String toString(final StackTraceElement stackTraceElement, final boolean printModuleName, final boolean printPackageInformation) {
                 final StringBuilder stringBuilder = new StringBuilder();
 
                 if (printModuleName && !AbstractExceptions.isEmpty(stackTraceElement.getModuleName())) {
@@ -140,7 +128,7 @@ public class Exceptions {
      * @return the value of global print module name option
      */
     public static boolean getPrintModuleName() {
-        return printModuleName;
+        return AbstractExceptions.getPrintModuleName();
     }
 
     /**
@@ -149,7 +137,7 @@ public class Exceptions {
      * @param printModuleName new global print module name option
      */
     public static void setPrintModuleName(final boolean printModuleName) {
-        Exceptions.printModuleName = printModuleName;
+        AbstractExceptions.setPrintModuleName(printModuleName);
     }
 
     /**
