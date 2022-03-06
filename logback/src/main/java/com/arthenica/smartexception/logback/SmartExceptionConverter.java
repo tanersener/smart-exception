@@ -65,11 +65,11 @@ public class SmartExceptionConverter extends ThrowableHandlingConverter {
 
     public static final String OPTION_VALUE_PRINT_PACKAGE_INFORMATION = "printPackageInformation";
 
-    private final Set<String> rootPackageSet = new LinkedHashSet<>();
+    private Set<String> rootPackages = new LinkedHashSet<>();
 
-    private final Set<String> groupPackageSet = new LinkedHashSet<>();
+    private Set<String> groupPackages = new LinkedHashSet<>();
 
-    private final Set<String> ignorePackageSet = new LinkedHashSet<>();
+    private Set<String> ignorePackages = new LinkedHashSet<>();
 
     private boolean ignoreCauses = AbstractExceptions.DEFAULT_IGNORE_ALL_CAUSES;
 
@@ -104,15 +104,15 @@ public class SmartExceptionConverter extends ThrowableHandlingConverter {
             try {
                 switch (split[0]) {
                     case OPTION_VALUE_ROOT_PACKAGE: {
-                        rootPackageSet.add(split[1]);
+                        rootPackages.add(split[1]);
                     }
                     break;
                     case OPTION_VALUE_GROUP_PACKAGE: {
-                        groupPackageSet.add(split[1]);
+                        groupPackages.add(split[1]);
                     }
                     break;
                     case OPTION_VALUE_IGNORE_PACKAGE: {
-                        ignorePackageSet.add(split[1]);
+                        ignorePackages.add(split[1]);
                     }
                     break;
                     case OPTION_VALUE_IGNORE_CAUSES: {
@@ -152,6 +152,74 @@ public class SmartExceptionConverter extends ThrowableHandlingConverter {
         return Boolean.parseBoolean(optionValue);
     }
 
+    public void addRootPackage(final String rootPackage) {
+        this.rootPackages.add(rootPackage);
+    }
+
+    public Set<String> getRootPackages() {
+        return rootPackages;
+    }
+
+    public void setRootPackages(final Set<String> rootPackages) {
+        this.rootPackages = rootPackages;
+    }
+
+    public void addGroupPackage(final String groupPackage) {
+        this.groupPackages.add(groupPackage);
+    }
+
+    public Set<String> getGroupPackages() {
+        return groupPackages;
+    }
+
+    public void setGroupPackages(final Set<String> groupPackages) {
+        this.groupPackages = groupPackages;
+    }
+
+    public void addIgnorePackage(final String ignorePackage) {
+        this.ignorePackages.add(ignorePackage);
+    }
+
+    public Set<String> getIgnorePackages() {
+        return ignorePackages;
+    }
+
+    public void setIgnorePackages(final Set<String> ignorePackages) {
+        this.ignorePackages = ignorePackages;
+    }
+
+    public boolean isIgnoreCauses() {
+        return ignoreCauses;
+    }
+
+    public void setIgnoreCauses(boolean ignoreCauses) {
+        this.ignoreCauses = ignoreCauses;
+    }
+
+    public boolean isPrintModuleName() {
+        return printModuleName;
+    }
+
+    public void setPrintModuleName(boolean printModuleName) {
+        this.printModuleName = printModuleName;
+    }
+
+    public int getMaxDepth() {
+        return maxDepth;
+    }
+
+    public void setMaxDepth(int maxDepth) {
+        this.maxDepth = maxDepth;
+    }
+
+    public boolean isPrintPackageInformation() {
+        return printPackageInformation;
+    }
+
+    public void setPrintPackageInformation(boolean printPackageInformation) {
+        this.printPackageInformation = printPackageInformation;
+    }
+
     @Override
     public String convert(ILoggingEvent event) {
         final IThrowableProxy throwableProxy = event.getThrowableProxy();
@@ -159,7 +227,7 @@ public class SmartExceptionConverter extends ThrowableHandlingConverter {
             return CoreConstants.EMPTY_STRING;
         }
 
-        return AbstractExceptions.getStackTraceString(ThrowableWrapperConverter.toThrowableWrapper(throwableProxy), false, rootPackageSet, groupPackageSet, ignorePackageSet, printModuleName, maxDepth, ignoreCauses, printPackageInformation);
+        return AbstractExceptions.getStackTraceString(ThrowableWrapperConverter.toThrowableWrapper(throwableProxy), false, rootPackages, groupPackages, ignorePackages, printModuleName, maxDepth, ignoreCauses, printPackageInformation);
     }
 
 }
