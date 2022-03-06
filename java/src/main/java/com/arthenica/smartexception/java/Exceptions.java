@@ -32,8 +32,8 @@
 
 package com.arthenica.smartexception.java;
 
-import com.arthenica.smartexception.*;
 import com.arthenica.smartexception.ClassLoader;
+import com.arthenica.smartexception.*;
 
 import java.util.Set;
 
@@ -50,68 +50,7 @@ public class Exceptions {
         packageLoader = new JavaPackageLoader();
         classLoader = new JavaClassLoader();
 
-        AbstractExceptions.setStackTraceElementSerializer(new StackTraceElementSerializer() {
-
-            @Override
-            public String toString(final StackTraceElement stackTraceElement, final boolean printPackageInformation) {
-                final StringBuilder stringBuilder = new StringBuilder();
-
-                stringBuilder.append(stackTraceElement.getClassName());
-                stringBuilder.append(".");
-                stringBuilder.append(stackTraceElement.getMethodName());
-
-                if (stackTraceElement.isNativeMethod()) {
-                    stringBuilder.append(getNativeMethodDefinition());
-                } else if ((stackTraceElement.getFileName() != null) && (stackTraceElement.getFileName().length() > 0)) {
-                    stringBuilder.append("(");
-                    stringBuilder.append(stackTraceElement.getFileName());
-                    if (stackTraceElement.getLineNumber() >= 0) {
-                        stringBuilder.append(":");
-                        stringBuilder.append(stackTraceElement.getLineNumber());
-                    }
-                    stringBuilder.append(")");
-                } else {
-                    stringBuilder.append(getUnknownSourceDefinition());
-                }
-
-                if (printPackageInformation) {
-                    stringBuilder.append(getPackageInformation(stackTraceElement));
-                }
-
-                return stringBuilder.toString();
-            }
-
-            @Override
-            public String getPackageInformation(final StackTraceElement stackTraceElement) {
-                final StringBuilder stringBuilder = new StringBuilder();
-
-                String className = stackTraceElement.getClassName();
-                Class<?> loadedClass = Exceptions.classLoader.loadClass(className);
-                if (loadedClass != null) {
-                    final String libraryName = AbstractExceptions.libraryName(loadedClass);
-                    final String version = AbstractExceptions.version(Exceptions.packageLoader, loadedClass, AbstractExceptions.packageName(className));
-
-                    stringBuilder.append(AbstractExceptions.packageInformation(libraryName, version));
-                }
-
-                return stringBuilder.toString();
-            }
-
-            @Override
-            public String getModuleName(StackTraceElement stackTraceElement) {
-                return "";
-            }
-
-            @Override
-            public String getNativeMethodDefinition() {
-                return "(Native Method)";
-            }
-
-            @Override
-            public String getUnknownSourceDefinition() {
-                return "(Unknown Source)";
-            }
-        });
+        AbstractExceptions.setStackTraceElementSerializer(new JavaStackTraceElementSerializer());
     }
 
     static PackageLoader packageLoader;

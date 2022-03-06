@@ -37,6 +37,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.core.CoreConstants;
 import com.arthenica.smartexception.AbstractExceptions;
+import com.arthenica.smartexception.java9.Java9StackTraceElementSerializer;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -77,6 +78,10 @@ public class SmartExceptionConverter extends ThrowableHandlingConverter {
     private int maxDepth = 0;
 
     private boolean printPackageInformation = AbstractExceptions.DEFAULT_PRINT_PACKAGE_INFORMATION;
+
+    static {
+        AbstractExceptions.setStackTraceElementSerializer(new Java9StackTraceElementSerializer());
+    }
 
     public void start() {
         parseOptions();
