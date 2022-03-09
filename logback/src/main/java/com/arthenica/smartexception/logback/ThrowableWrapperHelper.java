@@ -40,7 +40,7 @@ import com.arthenica.smartexception.ThrowableWrapper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ThrowableWrapperConverter {
+public class ThrowableWrapperHelper {
 
     static ThrowableWrapper toThrowableWrapper(final IThrowableProxy throwableProxy) {
         final String message = throwableProxy.getMessage();

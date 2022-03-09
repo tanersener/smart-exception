@@ -227,7 +227,7 @@ public class SmartExceptionConverter extends ThrowableHandlingConverter {
             return CoreConstants.EMPTY_STRING;
         }
 
-        return AbstractExceptions.getStackTraceString(ThrowableWrapperConverter.toThrowableWrapper(throwableProxy), false, rootPackages, groupPackages, ignorePackages, printModuleName, maxDepth, ignoreCauses, printPackageInformation);
+        return AbstractExceptions.getStackTraceString(ThrowableWrapperHelper.toThrowableWrapper(throwableProxy), false, rootPackages, groupPackages, ignorePackages, printModuleName, maxDepth, ignoreCauses, printPackageInformation);
     }
 
 }
