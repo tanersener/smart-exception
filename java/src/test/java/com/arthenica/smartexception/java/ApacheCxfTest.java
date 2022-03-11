@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2020, Taner Sener
+ * Copyright (c) 2020-2022, Taner Sener
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,8 +55,7 @@ public class ApacheCxfTest {
         try {
             builder.get();
         } catch (Exception e) {
-            String expectedStackTrace = "\n" +
-                    "javax.ws.rs.ProcessingException: java.net.ConnectException: ConnectException invoking http://localhost:12345/rs/service?param1=value1: Connection refused (Connection refused)\n" +
+            String expectedStackTrace = "javax.ws.rs.ProcessingException: java.net.ConnectException: ConnectException invoking http://localhost:12345/rs/service?param1=value1: Connection refused (Connection refused)\n" +
                     "\tat org.apache.cxf ... 10 more\n" +
                     "\tat com.arthenica.smartexception.java.ApacheCxfTest.access(ApacheCxfTest.java:56)\n" +
                     "Caused by: java.net.ConnectException: ConnectException invoking http://localhost:12345/rs/service?param1=value1: Connection refused (Connection refused)\n" +
@@ -87,8 +86,7 @@ public class ApacheCxfTest {
         try {
             builder.get();
         } catch (Exception e) {
-            String expectedStackTrace = "\n" +
-                    "javax.ws.rs.ProcessingException: java.net.ConnectException: ConnectException invoking http://localhost:12345/rs/service?param1=value1: Connection refused (Connection refused)\n" +
+            String expectedStackTrace = "javax.ws.rs.ProcessingException: java.net.ConnectException: ConnectException invoking http://localhost:12345/rs/service?param1=value1: Connection refused (Connection refused)\n" +
                     "\tat org.apache.cxf ... 10 more [cxf-rt-rs-client-3.4.5.jar]\n" +
                     "\tat com.arthenica.smartexception.java.ApacheCxfTest.accessAndPrintPackageInformation(ApacheCxfTest.java:88)\n" +
                     "Caused by: java.net.ConnectException: ConnectException invoking http://localhost:12345/rs/service?param1=value1: Connection refused (Connection refused)\n" +

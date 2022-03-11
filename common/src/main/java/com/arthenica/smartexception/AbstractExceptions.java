@@ -437,7 +437,6 @@ public abstract class AbstractExceptions {
                 builder.append(message);
             }
         } else {
-            builder.append(System.lineSeparator());
             builder.append(className);
             if (!isEmpty(message)) {
                 builder.append(": ");

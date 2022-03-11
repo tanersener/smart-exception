@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2020, Taner Sener
+ * Copyright (c) 2020-2022, Taner Sener
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,8 +64,7 @@ public class SpringTest {
         try {
             mvc.perform(MockMvcRequestBuilders.get("/user")).andExpect(status().isOk());
         } catch (Exception e) {
-            String expectedStackTrace = "\n" +
-                    "org.springframework.web.util.NestedServletException: Request processing failed; nested exception is java.lang.StringIndexOutOfBoundsException: Invalid index.\n" +
+            String expectedStackTrace = "org.springframework.web.util.NestedServletException: Request processing failed; nested exception is java.lang.StringIndexOutOfBoundsException: Invalid index.\n" +
                     "\tat org.springframework ... 6 more\n" +
                     "\tat com.arthenica.smartexception.java.SpringTest.getUserTest(SpringTest.java:66)\n" +
                     "Caused by: java.lang.StringIndexOutOfBoundsException: Invalid index.\n" +
@@ -85,8 +84,7 @@ public class SpringTest {
         try {
             mvc.perform(MockMvcRequestBuilders.get("/user", 12345)).andExpect(status().isOk());
         } catch (Exception e) {
-            String expectedStackTrace = "\n" +
-                    "org.springframework.web.util.NestedServletException: Request processing failed; nested exception is java.lang.StringIndexOutOfBoundsException: Invalid index.\n" +
+            String expectedStackTrace = "org.springframework.web.util.NestedServletException: Request processing failed; nested exception is java.lang.StringIndexOutOfBoundsException: Invalid index.\n" +
                     "\tat org.springframework ... 6 more\n" +
                     "\tat com.arthenica.smartexception.java.SpringTest.postUserTest(SpringTest.java:89)";
 
@@ -99,8 +97,7 @@ public class SpringTest {
         try {
             mvc.perform(MockMvcRequestBuilders.post("/user").content("Body")).andExpect(status().isOk());
         } catch (Exception e) {
-            String expectedStackTrace = "\n" +
-                    "org.springframework.web.util.NestedServletException: Request processing failed; nested exception is java.lang.NoSuchMethodException: Method not found.\n" +
+            String expectedStackTrace = "org.springframework.web.util.NestedServletException: Request processing failed; nested exception is java.lang.NoSuchMethodException: Method not found.\n" +
                     "\tat org.springframework ... 6 more\n" +
                     "\tat com.arthenica.smartexception.java.SpringTest.putUserTest(SpringTest.java:111)\n" +
                     "Caused by: java.lang.NoSuchMethodException: Method not found.\n" +
@@ -120,8 +117,7 @@ public class SpringTest {
         try {
             mvc.perform(MockMvcRequestBuilders.post("/user").content("Body")).andExpect(status().isOk());
         } catch (Exception e) {
-            String expectedStackTrace = "\n" +
-                    "org.springframework.web.util.NestedServletException: Request processing failed; nested exception is java.lang.NoSuchMethodException: Method not found.\n" +
+            String expectedStackTrace = "org.springframework.web.util.NestedServletException: Request processing failed; nested exception is java.lang.NoSuchMethodException: Method not found.\n" +
                     "\tat org.springframework ... 6 more [spring-webmvc-5.2.12.RELEASE.jar]\n" +
                     "\tat com.arthenica.smartexception.java.SpringTest.getStackTraceWithMaxDepthAndPrintPackageInformation(SpringTest.java:121)\n" +
                     "Caused by: java.lang.NoSuchMethodException: Method not found.\n" +
