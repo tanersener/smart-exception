@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2020-2021, Taner Sener
+ * Copyright (c) 2020-2022, Taner Sener
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,6 +33,7 @@
 package com.arthenica.smartexception.java9;
 
 import com.arthenica.smartexception.AbstractExceptions;
+import com.arthenica.smartexception.ThrowableWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.DecoderException;
@@ -43,9 +44,10 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import javax.management.MBeanException;
-import java.io.File;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.security.DigestException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -54,10 +56,41 @@ import java.util.concurrent.Callable;
 
 public class ExceptionsTest {
 
-    static String trimDynamicParts(String stackTraceLine) {
+    static String trimDynamicParts(final String stackTraceLine) {
         // TRIM LINE NUMBER - ADDING NEW TEST CASES CAUSES EXISTING TESTS TO FAIL
         // TRIM MODULE NAME - DEPENDING ON THE CLASS LOADER MODULE NAME CAN BE PRINTED OR NOT
         return stackTraceLine.replaceAll(":[0-9]*\\)", "\\)").replaceAll("at .*/", "at ");
+    }
+
+    static String toString(final Exception e) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        e.printStackTrace(new PrintStream(outputStream));
+        return outputStream.toString();
+    }
+
+    @Test
+    public void getStackTraceOriginal() {
+        Exception level4Exception = new ArrayIndexOutOfBoundsException("Index not valid.");
+        Exception level3Exception = new ConcurrentModificationException(level4Exception);
+        Exception level2Exception = new IllegalStateException(level3Exception);
+        final Exception level1Exception = new MBeanException(level2Exception);
+
+        try {
+            Exceptions.setPrintModuleName(true);
+            Callable<String> stringCallable = new Callable<String>() {
+                @Override
+                public String call() throws Exception {
+                    throw level1Exception;
+                }
+            };
+            stringCallable.call();
+        } catch (Exception e) {
+            String expectedStackTrace = toString(e);
+            String stackTraceString = Exceptions.getStackTraceString(e, true);
+            Assert.assertTrue(expectedStackTrace.startsWith(stackTraceString));
+        } finally {
+            Exceptions.setPrintModuleName(AbstractExceptions.DEFAULT_PRINT_MODULE_NAME);
+        }
     }
 
     @Test
@@ -76,8 +109,7 @@ public class ExceptionsTest {
             };
             stringCallable.call();
         } catch (Exception e) {
-            String expectedStackTrace = "\n" +
-                    "javax.management.MBeanException\n" +
+            String expectedStackTrace = "javax.management.MBeanException\n" +
                     "\tat com.arthenica.smartexception.java9.ExceptionsTest.getStackTrace(ExceptionsTest.java:54)\n" +
                     "Caused by: java.lang.IllegalStateException: java.util.ConcurrentModificationException: java.lang.ArrayIndexOutOfBoundsException: Index not valid.\n" +
                     "\tat com.arthenica.smartexception.java9.ExceptionsTest.getStackTrace(ExceptionsTest.java:53)\n" +
@@ -101,8 +133,7 @@ public class ExceptionsTest {
             };
             stringCallable.call();
         } catch (Exception e) {
-            String expectedStackTrace = "\n" +
-                    "javax.management.MBeanException\n" +
+            String expectedStackTrace = "javax.management.MBeanException\n" +
                     "\tat com.arthenica.smartexception.java9.ExceptionsTest.getStackTrace(ExceptionsTest.java:54)\n" +
                     "Caused by: java.lang.IllegalStateException: java.util.ConcurrentModificationException: java.lang.ArrayIndexOutOfBoundsException: Index not valid.\n" +
                     "\tat com.arthenica.smartexception.java9.ExceptionsTest.getStackTrace(ExceptionsTest.java:53)\n" +
@@ -125,8 +156,7 @@ public class ExceptionsTest {
             };
             stringCallable.call();
         } catch (Exception e) {
-            String expectedStackTrace = "\n" +
-                    "javax.management.MBeanException\n" +
+            String expectedStackTrace = "javax.management.MBeanException\n" +
                     "\tat com.arthenica.smartexception.java9.ExceptionsTest.getStackTrace(ExceptionsTest.java:54)";
 
             Assert.assertEquals(ExceptionsTest.trimDynamicParts(expectedStackTrace), ExceptionsTest.trimDynamicParts(Exceptions.getStackTraceString(e, true)));
@@ -149,8 +179,7 @@ public class ExceptionsTest {
             };
             stringCallable.call();
         } catch (Exception e) {
-            String expectedStackTrace = "\n" +
-                    "javax.management.MBeanException\n" +
+            String expectedStackTrace = "javax.management.MBeanException\n" +
                     "\tat com.arthenica.smartexception.java9.ExceptionsTest.getStackTraceWithPackages(ExceptionsTest.java:129)\n" +
                     "Caused by: java.lang.IllegalStateException: java.util.ConcurrentModificationException: java.lang.ArrayIndexOutOfBoundsException: Index not valid.\n" +
                     "\tat com.arthenica.smartexception.java9.ExceptionsTest.getStackTraceWithPackages(ExceptionsTest.java:128)\n" +
@@ -168,8 +197,7 @@ public class ExceptionsTest {
             };
             stringCallable.call();
         } catch (Exception e) {
-            String expectedStackTrace = "\n" +
-                    "javax.management.MBeanException\n" +
+            String expectedStackTrace = "javax.management.MBeanException\n" +
                     "\tat com.arthenica.smartexception.java9.ExceptionsTest.getStackTraceWithPackages(ExceptionsTest.java:129)\n" +
                     "Caused by: java.lang.IllegalStateException: java.util.ConcurrentModificationException: java.lang.ArrayIndexOutOfBoundsException: Index not valid.\n" +
                     "\tat com.arthenica.smartexception.java9.ExceptionsTest.getStackTraceWithPackages(ExceptionsTest.java:128)\n" +
@@ -195,8 +223,7 @@ public class ExceptionsTest {
             };
             stringCallable.call();
         } catch (Exception e) {
-            String expectedStackTrace = "\n" +
-                    "javax.management.MBeanException\n" +
+            String expectedStackTrace = "javax.management.MBeanException\n" +
                     "\tat com.arthenica.smartexception.java9.ExceptionsTest.getStackTraceWithRootPackage(ExceptionsTest.java:175)\n" +
                     "Caused by: java.lang.IllegalStateException: java.util.ConcurrentModificationException: java.lang.ArrayIndexOutOfBoundsException: Index not valid.\n" +
                     "\tat com.arthenica.smartexception.java9.ExceptionsTest.getStackTraceWithRootPackage(ExceptionsTest.java:174)\n" +
@@ -214,8 +241,7 @@ public class ExceptionsTest {
         try {
             Integer.parseInt("ABC");
         } catch (NumberFormatException e) {
-            String expectedStackTrace = "\n" +
-                    "java.lang.NumberFormatException: For input string: \"ABC\"\n" +
+            String expectedStackTrace = "java.lang.NumberFormatException: For input string: \"ABC\"\n" +
                     "\tat java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:65)\n" +
                     "\tat java.base/java.lang.Integer.parseInt(Integer.java:652)\n" +
                     "\tat java.base/java.lang.Integer.parseInt(Integer.java:770)\n" +
@@ -231,8 +257,7 @@ public class ExceptionsTest {
 
             Integer.parseInt("ABC");
         } catch (NumberFormatException e) {
-            String expectedStackTrace = "\n" +
-                    "java.lang.NumberFormatException: For input string: \"ABC\"\n" +
+            String expectedStackTrace = "java.lang.NumberFormatException: For input string: \"ABC\"\n" +
                     "\tat java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:65)\n" +
                     "\tat java.base/java.lang.Integer.parseInt(Integer.java:652)\n" +
                     "\tat java.base/java.lang.Integer.parseInt(Integer.java:770)\n" +
@@ -307,8 +332,7 @@ public class ExceptionsTest {
             };
             stringCallable.call();
         } catch (Exception e) {
-            String expectedStackTrace = "\n" +
-                    "javax.management.MBeanException\n" +
+            String expectedStackTrace = "javax.management.MBeanException\n" +
                     "\tat com.arthenica.smartexception.java9.ExceptionsTest.getStackTraceWithMaxDepth(ExceptionsTest.java:287)\n" +
                     "\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n" +
                     "Caused by: java.lang.IllegalStateException: java.util.ConcurrentModificationException: java.lang.ArrayIndexOutOfBoundsException: Index not valid.\n" +
@@ -331,8 +355,7 @@ public class ExceptionsTest {
             };
             stringCallable.call();
         } catch (Exception e) {
-            String expectedStackTrace = "\n" +
-                    "javax.management.MBeanException\n" +
+            String expectedStackTrace = "javax.management.MBeanException\n" +
                     "\tat com.arthenica.smartexception.java9.ExceptionsTest.getStackTraceWithMaxDepth(ExceptionsTest.java:287)\n" +
                     "\tat jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)";
 
@@ -347,8 +370,7 @@ public class ExceptionsTest {
             };
             stringCallable.call();
         } catch (Exception e) {
-            String expectedStackTrace = "\n" +
-                    "javax.management.MBeanException\n" +
+            String expectedStackTrace = "javax.management.MBeanException\n" +
                     "\tat com.arthenica.smartexception.java9.ExceptionsTest.getStackTraceWithMaxDepth(ExceptionsTest.java:287)\n" +
                     "\tat jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)";
 
@@ -376,7 +398,7 @@ public class ExceptionsTest {
         String randomFileNumber = String.format("random-file-%d.log", System.currentTimeMillis());
 
         try {
-            new FileInputStream(new File(randomFileNumber));
+            new FileInputStream(randomFileNumber);
         } catch (FileNotFoundException e) {
             Assert.assertTrue(Exceptions.containsCause(e, FileNotFoundException.class));
         }
@@ -486,9 +508,9 @@ public class ExceptionsTest {
     public void packageInformationJunit() {
         RuntimeException runtimeException = new RuntimeException("Fail!");
 
-        StackTraceElement stackTraceElement = Arrays.asList(AbstractExceptions.getStackTrace(runtimeException, 6)).get(5);
-        Assert.assertEquals("junit-4.13.jar", libraryName(stackTraceElement));
-        Assert.assertEquals("4.13", version(stackTraceElement));
+        StackTraceElement stackTraceElement = Arrays.asList(AbstractExceptions.getStackTrace(new ThrowableWrapper(runtimeException), 6)).get(5);
+        Assert.assertEquals("junit-4.13.2.jar", libraryName(stackTraceElement));
+        Assert.assertEquals("4.13.2", version(stackTraceElement));
     }
 
     @Test
@@ -496,11 +518,11 @@ public class ExceptionsTest {
         try {
             Hex.decodeHex("12345".toCharArray());
         } catch (DecoderException exception) {
-            StackTraceElement[] stackTrace = AbstractExceptions.getStackTrace(exception, 10);
+            StackTraceElement[] stackTrace = AbstractExceptions.getStackTrace(new ThrowableWrapper(exception), 10);
 
             StackTraceElement stackTraceElement = Arrays.asList(stackTrace).get(0);
-            Assert.assertEquals("commons-codec-1.10.jar", libraryName(stackTraceElement));
-            Assert.assertEquals("1.10", version(stackTraceElement));
+            Assert.assertEquals("commons-codec-1.15.jar", libraryName(stackTraceElement));
+            Assert.assertEquals("1.15", version(stackTraceElement));
         }
     }
 
@@ -509,7 +531,7 @@ public class ExceptionsTest {
         try {
             new JSONArray("");
         } catch (JSONException exception) {
-            StackTraceElement[] stackTrace = AbstractExceptions.getStackTrace(exception, 10);
+            StackTraceElement[] stackTrace = AbstractExceptions.getStackTrace(new ThrowableWrapper(exception), 10);
 
             StackTraceElement stackTraceElement = Arrays.asList(stackTrace).get(0);
             Assert.assertEquals("android-json-0.0.20131108.vaadin1.jar", libraryName(stackTraceElement));
@@ -522,11 +544,11 @@ public class ExceptionsTest {
         try {
             new ObjectMapper().readValue("", Long.class);
         } catch (JsonProcessingException exception) {
-            StackTraceElement[] stackTrace = AbstractExceptions.getStackTrace(exception, 10);
+            StackTraceElement[] stackTrace = AbstractExceptions.getStackTrace(new ThrowableWrapper(exception), 10);
 
             StackTraceElement stackTraceElement = Arrays.asList(stackTrace).get(0);
-            Assert.assertEquals("jackson-databind-2.10.3.jar", libraryName(stackTraceElement));
-            Assert.assertEquals("2.10.3", version(stackTraceElement));
+            Assert.assertEquals("jackson-databind-2.10.5.1.jar", libraryName(stackTraceElement));
+            Assert.assertEquals("2.10.5.1", version(stackTraceElement));
         }
     }
 
@@ -544,7 +566,7 @@ public class ExceptionsTest {
         String className = stackTraceElement.getClassName();
         Class<?> loadedClass = Exceptions.classLoader.loadClass(className);
         if (loadedClass != null) {
-            return AbstractExceptions.getVersion(Exceptions.packageLoader, loadedClass, AbstractExceptions.packageName(className));
+            return AbstractExceptions.version(Exceptions.packageLoader, loadedClass, AbstractExceptions.packageName(className));
         } else {
             return null;
         }

@@ -1,0 +1,101 @@
+import java.text.SimpleDateFormat
+
+sourceCompatibility = JavaVersion.VERSION_1_9
+targetCompatibility = JavaVersion.VERSION_1_9
+
+dependencies {
+    api project(":smart-exception-java9")
+    compileOnly('ch.qos.logback:logback-core:' + logbackVersion)
+    compileOnly('ch.qos.logback:logback-classic:' + logbackVersion)
+    testImplementation('net.logstash.logback:logstash-logback-encoder:' + logstashLogbackEncoderVersion)
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    archiveClassifier.set('javadoc')
+    from javadoc.destinationDir
+    manifest {
+        attributes(
+                'Built-By': System.getProperty('user.name'),
+                'Build-Timestamp': new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ").format(new Date()),
+                'Created-By': "Gradle ${gradle.gradleVersion}",
+                'Build-Jdk': System.getProperty('java.version'),
+                'Implementation-Version': archiveVersion
+        )
+    }
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+archivesBaseName = "smart-exception-logback"
+
+ext {
+    libraryName = "smart-exception-logback"
+    artifact = "smart-exception-logback"
+    libraryDescription = "smart-exception logback package"
+    libraryVersion = version
+}
+
+if (project.hasProperty('release')) {
+
+    File propertiesFile = project.rootProject.file('local.properties')
+    if (propertiesFile.exists()) {
+        Properties properties = new Properties()
+        properties.load(new FileInputStream(propertiesFile))
+        properties.each { name, value ->
+            ext[name] = value
+        }
+    }
+
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+
+                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+
+                pom.project {
+                    packaging 'jar'
+                    name = libraryName
+                    description = libraryDescription
+                    url = siteUrl
+
+                    licenses {
+                        license {
+                            name = licenseName
+                            url = licenseUrl
+                        }
+                    }
+                    developers {
+                        developer {
+                            id developerId
+                            name developerName
+                            email developerEmail
+                        }
+                    }
+                    scm {
+                        connection gitUrl
+                        developerConnection gitUrl
+                        url siteUrl
+                    }
+                }
+            }
+        }
+    }
+
+    signing {
+        sign configurations.archives
+    }
+
+}

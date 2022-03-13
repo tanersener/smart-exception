@@ -1,7 +1,7 @@
 /*
  * BSD 3-Clause License
  *
- * Copyright (c) 2020, Taner Sener
+ * Copyright (c) 2020-2022, Taner Sener
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,6 @@ package com.arthenica.smartexception.test.java;
 import com.arthenica.smartexception.java.Exceptions;
 
 import javax.management.MBeanException;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.security.DigestException;
@@ -81,7 +80,7 @@ public class ExceptionsExample {
             };
             stringCallable.call();
         } catch (Exception e) {
-            System.out.println(Exceptions.getStackTraceString(e));
+            printLog("getStackTrace One", Exceptions.getStackTraceString(e));
         } finally {
             Exceptions.clearRootPackages();
             Exceptions.clearIgnorePackages();
@@ -99,7 +98,7 @@ public class ExceptionsExample {
             };
             stringCallable.call();
         } catch (Exception e) {
-            System.out.println(Exceptions.getStackTraceString(e));
+            printLog("getStackTrace Two", Exceptions.getStackTraceString(e));
         } finally {
             Exceptions.clearRootPackages();
             Exceptions.clearIgnorePackages();
@@ -117,7 +116,7 @@ public class ExceptionsExample {
             };
             stringCallable.call();
         } catch (Exception e) {
-            System.out.println(Exceptions.getStackTraceString(e, true));
+            printLog("getStackTrace Three", Exceptions.getStackTraceString(e, true));
         } finally {
             Exceptions.clearRootPackages();
             Exceptions.clearIgnorePackages();
@@ -139,7 +138,7 @@ public class ExceptionsExample {
             };
             stringCallable.call();
         } catch (Exception e) {
-            System.out.println(Exceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), new HashSet<String>(), new HashSet<String>()));
+            printLog("getStackTraceWithPackages One", Exceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), new HashSet<String>(), new HashSet<String>()));
         }
 
         try {
@@ -151,7 +150,7 @@ public class ExceptionsExample {
             };
             stringCallable.call();
         } catch (Exception e) {
-            System.out.println(Exceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), new HashSet<String>(), new HashSet<String>()));
+            printLog("getStackTraceWithPackages Two", Exceptions.getStackTraceString(e, Collections.singleton("com.arthenica"), new HashSet<String>(), new HashSet<String>()));
         }
     }
 
@@ -170,7 +169,7 @@ public class ExceptionsExample {
             };
             stringCallable.call();
         } catch (Exception e) {
-            System.out.println(Exceptions.getStackTraceString(e, "com.arthenica"));
+            printLog("getStackTraceWithRootPackage", Exceptions.getStackTraceString(e, "com.arthenica"));
         }
     }
 
@@ -178,7 +177,7 @@ public class ExceptionsExample {
         try {
             Integer.parseInt("ABC");
         } catch (NumberFormatException e) {
-            System.out.println(Exceptions.getStackTraceString(e, "com.arthenica", "org.gradle"));
+            printLog("getStackTraceWithRootPackageAndGroupPackage One", Exceptions.getStackTraceString(e, "com.arthenica", "org.gradle"));
         }
 
         try {
@@ -188,7 +187,7 @@ public class ExceptionsExample {
 
             Integer.parseInt("ABC");
         } catch (NumberFormatException e) {
-            System.out.println(Exceptions.getStackTraceString(e, new HashSet<String>(), new HashSet<String>(), new HashSet<String>()));
+            printLog("getStackTraceWithRootPackageAndGroupPackage Two", Exceptions.getStackTraceString(e, new HashSet<String>(), new HashSet<String>(), new HashSet<String>()));
         } finally {
             Exceptions.clearGroupPackages();
         }
@@ -209,7 +208,7 @@ public class ExceptionsExample {
             };
             stringCallable.call();
         } catch (Exception e) {
-            System.out.println(Exceptions.getStackTraceString(e, 2));
+            printLog("getStackTraceWithMaxDepth One", Exceptions.getStackTraceString(e, 2));
         }
 
         try {
@@ -222,7 +221,7 @@ public class ExceptionsExample {
             };
             stringCallable.call();
         } catch (Exception e) {
-            System.out.println(Exceptions.getStackTraceString(e, 2));
+            printLog("getStackTraceWithMaxDepth Two", Exceptions.getStackTraceString(e, 2));
         } finally {
             Exceptions.setIgnoreAllCauses(false);
         }
@@ -236,7 +235,7 @@ public class ExceptionsExample {
             };
             stringCallable.call();
         } catch (Exception e) {
-            System.out.println(Exceptions.getStackTraceString(e, 2, true));
+            printLog("getStackTraceWithMaxDepth Three", Exceptions.getStackTraceString(e, 2, true));
         }
     }
 
@@ -253,7 +252,7 @@ public class ExceptionsExample {
             };
             stringCallable.call();
         } catch (Exception e) {
-            System.out.println(Exceptions.getAllMessages(e));
+            printLog("getAllMessages", Exceptions.getAllMessages(e));
         }
     }
 
@@ -261,10 +260,10 @@ public class ExceptionsExample {
         String randomFileNumber = String.format("random-file-%d.log", System.currentTimeMillis());
 
         try {
-            new FileInputStream(new File(randomFileNumber));
+            new FileInputStream(randomFileNumber);
         } catch (FileNotFoundException e) {
             if (Exceptions.containsCause(e, FileNotFoundException.class)) {
-                System.out.println("This is file not found error.");
+                printLog("containsCauseWithException", "This is file not found error.");
             }
         }
     }
@@ -274,7 +273,7 @@ public class ExceptionsExample {
             Integer.parseInt("ABC");
         } catch (NumberFormatException e) {
             if (Exceptions.containsCause(e, NumberFormatException.class, "For input string: \"ABC\"")) {
-                System.out.println("This is number format error.");
+                printLog("containsCauseWithExceptionAndMessage", "This is number format error.");
             }
         }
     }
@@ -293,7 +292,7 @@ public class ExceptionsExample {
             };
             stringCallable.call();
         } catch (Exception e) {
-            System.out.println(Exceptions.getStackTraceString(Exceptions.getCause(e)));
+            printLog("getCause", Exceptions.getStackTraceString(Exceptions.getCause(e)));
         }
     }
 
@@ -312,7 +311,7 @@ public class ExceptionsExample {
             };
             stringCallable.call();
         } catch (Exception e) {
-            System.out.println(Exceptions.getStackTraceString(Exceptions.getCause(e, 2)));
+            printLog("getCauseWithMaxDepth", Exceptions.getStackTraceString(Exceptions.getCause(e, 2)));
         }
     }
 
@@ -332,13 +331,13 @@ public class ExceptionsExample {
             stringCallable.call();
         } catch (Exception e) {
             if (Exceptions.searchCause(e, ArrayIndexOutOfBoundsException.class, 2) == null) {
-                System.out.println("ArrayIndexOutOfBoundsException is not among the first two exceptions.");
+                printLog("searchCause One", "ArrayIndexOutOfBoundsException is not among the first two exceptions.");
             }
             if (Exceptions.searchCause(e, ConcurrentModificationException.class, 1) == null) {
-                System.out.println("ConcurrentModificationException is not among the first two exceptions.");
+                printLog("searchCause Two", "ConcurrentModificationException is not among the first two exceptions.");
             }
             if (Exceptions.searchCause(e, IllegalArgumentException.class, 10) == null) {
-                System.out.println("IllegalArgumentException is not among the first two exceptions.");
+                printLog("searchCause Three", "IllegalArgumentException is not among the first two exceptions.");
             }
         }
     }
@@ -359,13 +358,13 @@ public class ExceptionsExample {
             stringCallable.call();
         } catch (Exception e) {
             if (Exceptions.searchCause(e, ConcurrentModificationException.class) != null) {
-                System.out.println("ConcurrentModificationException found.");
+                printLog("searchCauseWithCauseClass One", "ConcurrentModificationException found.");
             }
             if (Exceptions.searchCause(e, ConcurrentModificationException.class, "Index not valid.") != null) {
-                System.out.println("ConcurrentModificationException found.");
+                printLog("searchCauseWithCauseClass Two", "ConcurrentModificationException found.");
             }
             if (Exceptions.searchCause(e, ConcurrentModificationException.class, "I am valid index.") == null) {
-                System.out.println("ConcurrentModificationException not found.");
+                printLog("searchCauseWithCauseClass Three", "ConcurrentModificationException not found.");
             }
         }
     }
@@ -386,15 +385,21 @@ public class ExceptionsExample {
             stringCallable.call();
         } catch (Exception e) {
             if (Exceptions.searchCause(e, ArrayIndexOutOfBoundsException.class, "Index not valid.", 2) != null) {
-                System.out.println("ArrayIndexOutOfBoundsException found.");
+                printLog("searchCauseWithCauseClassAndCauseMessageAndMaxDepth One", "ArrayIndexOutOfBoundsException found.");
             }
             if (Exceptions.searchCause(e, ArrayIndexOutOfBoundsException.class, "Index valid.", 3) != null) {
-                System.out.println("ArrayIndexOutOfBoundsException found.");
+                printLog("searchCauseWithCauseClassAndCauseMessageAndMaxDepth Two", "ArrayIndexOutOfBoundsException found.");
             }
             if (Exceptions.searchCause(e, ArrayIndexOutOfBoundsException.class, "Index not valid.", 3) == null) {
-                System.out.println("ArrayIndexOutOfBoundsException not found.");
+                printLog("searchCauseWithCauseClassAndCauseMessageAndMaxDepth Three", "ArrayIndexOutOfBoundsException not found.");
             }
         }
+    }
+
+    public static void printLog(final String title, final String log) {
+        System.err.println("---------- start --- " + title);
+        System.err.println(log);
+        System.err.println("---------- end --- " + title);
     }
 
 }

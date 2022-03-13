@@ -1,0 +1,28 @@
+plugins {
+    id 'com.google.cloud.tools.jib' version '3.2.0'
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_9
+targetCompatibility = JavaVersion.VERSION_1_9
+
+jib {
+    from {
+        image = 'adoptopenjdk/openjdk11:alpine-jre@sha256:59e9ddc72f27eafd43eed9c421c93908a81e004953042d4549d28a7b40107f0c'
+    }
+    to {
+        image = 'gcr.io/arthenica/smart-exception/logback-test'
+        tags = ['latest']
+    }
+}
+
+dependencies {
+    implementation 'com.arthenica:smart-exception-logback:0.2.0'
+    implementation('org.springframework.boot:spring-boot-starter-test:' + springBootVersion) {
+        exclude group: 'org.junit.jupiter', module: 'junit-jupiter'
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+        exclude group: 'org.mockito', module: 'mockito-junit-jupiter'
+    }
+    implementation 'org.springframework.boot:spring-boot-starter-web:' + springBootVersion
+    implementation 'ch.qos.logback:logback-classic:' + logbackVersion
+    implementation 'net.logstash.logback:logstash-logback-encoder:' + logstashLogbackEncoderVersion
+}

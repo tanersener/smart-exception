@@ -10,7 +10,7 @@ subprojects {
     apply plugin: 'java-library'
 
     group = 'com.arthenica'
-    version = '0.1.1'
+    version = '0.2.0'
 
     task sourcesJar(type: Jar) {
         archiveClassifier.set('sources')
@@ -21,7 +21,7 @@ subprojects {
                     'Build-Timestamp': new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ").format(new Date()),
                     'Created-By': "Gradle ${gradle.gradleVersion}",
                     'Build-Jdk': System.getProperty('java.version'),
-                    'Implementation-Version': version
+                    'Implementation-Version': archiveVersion
             )
         }
     }
@@ -34,7 +34,7 @@ subprojects {
                     'Build-Timestamp': new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ").format(new Date()),
                     'Created-By': "Gradle ${gradle.gradleVersion}",
                     'Build-Jdk': System.getProperty('java.version'),
-                    'Implementation-Version': version
+                    'Implementation-Version': archiveVersion
             )
         }
     }
@@ -57,12 +57,14 @@ subprojects {
     }
 
     ext {
-        cxfVersion = '3.3.6'
-        springBootVersion = '2.2.6.RELEASE'
-        mockitoVersion = '3.3.3'
-        slf4jVersion = '1.7.30'
-        logbackVersion = '1.2.3'
-        junitVersion = '4.13'
+        cxfVersion = '3.4.5'
+        springBootVersion = '2.2.13.RELEASE'
+        mockitoVersion = '3.12.4'
+        slf4jVersion = '1.7.32'
+        logbackVersion = '1.2.7'
+        junitVersion = '4.13.2'
+        commonsCodecVersion = '1.15'
+        logstashLogbackEncoderVersion = '7.0.1'
 
         // release properties
         bintrayRepo = 'maven'
@@ -91,10 +93,12 @@ subprojects {
         testImplementation 'org.slf4j:slf4j-api:' + slf4jVersion
         testImplementation 'ch.qos.logback:logback-classic:' + logbackVersion
         testImplementation 'junit:junit:' + junitVersion
+        testImplementation 'commons-codec:commons-codec:' + commonsCodecVersion
     }
 
     repositories {
         mavenCentral()
+        mavenLocal()
     }
 
 }

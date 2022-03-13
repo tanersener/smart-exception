@@ -1,0 +1,57 @@
+# docker-compose.yml
+
+version: "3"
+services:
+  smartexception:
+    image: gcr.io/arthenica/smart-exception/logback-test:latest
+    ports:
+      - "8080:8080"
+    expose:
+      - "8080"
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: "docker.for.mac.localhost:24224"
+        fluentd-async: 'true'
+        tag: 'smartexception'
+    depends_on:
+      - fluentd
+    networks:
+      - elastic
+
+  fluentd:
+    build: ./fluentd
+    container_name: fluentd
+    volumes:
+      - ./fluentd/conf:/fluentd/etc
+    expose:
+      - "24224"
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+    networks:
+      - elastic
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
+    container_name: elasticsearch
+    ports:
+      - "9200:9200"
+    networks:
+      - elastic
+    environment:
+      - discovery.type=single-node
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana-oss:7.10.2
+    container_name: kibana
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    networks:
+      - elastic
+
+networks:
+  elastic:
+    driver: bridge

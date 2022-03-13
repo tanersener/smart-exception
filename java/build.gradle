@@ -16,7 +16,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
                 'Build-Timestamp': new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ").format(new Date()),
                 'Created-By': "Gradle ${gradle.gradleVersion}",
                 'Build-Jdk': System.getProperty('java.version'),
-                'Implementation-Version': version
+                'Implementation-Version': archiveVersion
         )
     }
 }
