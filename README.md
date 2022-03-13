@@ -171,8 +171,8 @@ dependencies {
 ### 3. Versions
 
 |                           SmartException Version                           | Release Date |
-|:--------------------------------------------------------------------------:| :----: |
-| [0.2.0](https://github.com/tanersener/smart-exception/releases/tag/v0.2.0) |  |
+|:--------------------------------------------------------------------------:|:------------:|
+| [0.2.0](https://github.com/tanersener/smart-exception/releases/tag/v0.2.0) | Mar 13, 2022 |
 | [0.1.1](https://github.com/tanersener/smart-exception/releases/tag/v0.1.1) | Nov 28, 2021 |
 | [0.1.0](https://github.com/tanersener/smart-exception/releases/tag/v0.1.0) | Apr 12, 2020 |
 
