@@ -44,14 +44,15 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import javax.management.MBeanException;
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
+import java.io.*;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.DigestException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 
 public class ExceptionsTest {
@@ -62,10 +63,14 @@ public class ExceptionsTest {
         return stackTraceLine.replaceAll(":[0-9]*\\)", "\\)").replaceAll("at .*/", "at ");
     }
 
-    static String toString(final Exception e) {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        e.printStackTrace(new PrintStream(outputStream));
+    static String toString(final Throwable throwable) {
+        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        throwable.printStackTrace(new PrintStream(outputStream));
         return outputStream.toString();
+    }
+
+    static String loadTestResourceAsString(final String resourceName) throws URISyntaxException, IOException {
+        return new String(Files.readAllBytes(Paths.get(Objects.requireNonNull(ExceptionsTest.class.getResource(resourceName)).toURI())));
     }
 
     @Test
@@ -91,6 +96,24 @@ public class ExceptionsTest {
         } finally {
             Exceptions.setPrintModuleName(AbstractExceptions.DEFAULT_PRINT_MODULE_NAME);
         }
+    }
+
+    @Test
+    public void getStackTraceSuppressed() throws URISyntaxException, IOException {
+        final Throwable throwable = generateSuppressedException(false);
+
+        String expectedStackTrace = loadTestResourceAsString("/suppressed.txt");
+        String stackTraceString = Exceptions.getStackTraceString(throwable).replaceAll("java.base/", "");
+        Assert.assertTrue(expectedStackTrace.startsWith(stackTraceString));
+    }
+
+    @Test
+    public void getStackTraceSuppressedCircular() throws URISyntaxException, IOException {
+        final Throwable throwable = generateSuppressedException(true);
+
+        String expectedStackTrace = loadTestResourceAsString("/suppressedCircular.txt");
+        String stackTraceString = Exceptions.getStackTraceString(throwable).replaceAll("java.base/", "");
+        Assert.assertTrue(expectedStackTrace.startsWith(stackTraceString));
     }
 
     @Test
@@ -503,7 +526,6 @@ public class ExceptionsTest {
         }
     }
 
-
     @Test
     public void packageInformationJunit() {
         RuntimeException runtimeException = new RuntimeException("Fail!");
@@ -550,6 +572,32 @@ public class ExceptionsTest {
             Assert.assertEquals("jackson-databind-2.10.5.1.jar", libraryName(stackTraceElement));
             Assert.assertEquals("2.10.5.1", version(stackTraceElement));
         }
+    }
+
+    Throwable generateSuppressedException(final boolean circular) {
+        InputStream stream = null;
+        Throwable throwable = null;
+        Throwable returnThrowable = null;
+        try {
+            stream = Files.newInputStream(Paths.get("NotExistingFile.txt"));
+        } catch (IOException e) {
+            throwable = new RuntimeException(new IOException(e));
+        } finally {
+            try {
+                Objects.requireNonNull(stream).close();
+            } catch (NullPointerException e) {
+                if (throwable != null) {
+                    throwable.addSuppressed(new IllegalArgumentException(e));
+                    if (circular) {
+                        e.addSuppressed(throwable);
+                    }
+                }
+                returnThrowable = throwable;
+            } catch (IOException ignored) {
+            }
+        }
+
+        return returnThrowable;
     }
 
     String libraryName(final StackTraceElement stackTraceElement) {

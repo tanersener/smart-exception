@@ -65,6 +65,8 @@ public class SmartExceptionConverter extends ThrowableHandlingConverter {
 
     public static final String OPTION_VALUE_PRINT_PACKAGE_INFORMATION = "printPackageInformation";
 
+    public static final String OPTION_VALUE_PRINT_SUPPRESSED_EXCEPTIONS = "printSuppressedExceptions";
+
     private Set<String> rootPackages = new LinkedHashSet<>();
 
     private Set<String> groupPackages = new LinkedHashSet<>();
@@ -78,6 +80,8 @@ public class SmartExceptionConverter extends ThrowableHandlingConverter {
     private int maxDepth = 0;
 
     private boolean printPackageInformation = AbstractExceptions.DEFAULT_PRINT_PACKAGE_INFORMATION;
+
+    private boolean printSuppressedExceptions = AbstractExceptions.DEFAULT_PRINT_SUPPRESSED_EXCEPTIONS;
 
     static {
         AbstractExceptions.setStackTraceElementSerializer(new Java9StackTraceElementSerializer());
@@ -129,6 +133,10 @@ public class SmartExceptionConverter extends ThrowableHandlingConverter {
                     break;
                     case OPTION_VALUE_PRINT_PACKAGE_INFORMATION: {
                         printPackageInformation = parseBooleanOption(split[1]);
+                    }
+                    break;
+                    case OPTION_VALUE_PRINT_SUPPRESSED_EXCEPTIONS: {
+                        printSuppressedExceptions = parseBooleanOption(split[1]);
                     }
                     break;
                     default: {
@@ -220,6 +228,14 @@ public class SmartExceptionConverter extends ThrowableHandlingConverter {
         this.printPackageInformation = printPackageInformation;
     }
 
+    public boolean isPrintSuppressedExceptions() {
+        return printSuppressedExceptions;
+    }
+
+    public void setPrintSuppressedExceptions(boolean printSuppressedExceptions) {
+        this.printSuppressedExceptions = printSuppressedExceptions;
+    }
+
     @Override
     public String convert(ILoggingEvent event) {
         final IThrowableProxy throwableProxy = event.getThrowableProxy();
@@ -227,7 +243,7 @@ public class SmartExceptionConverter extends ThrowableHandlingConverter {
             return CoreConstants.EMPTY_STRING;
         }
 
-        return AbstractExceptions.getStackTraceString(ThrowableWrapperHelper.toThrowableWrapper(throwableProxy), false, rootPackages, groupPackages, ignorePackages, printModuleName, maxDepth, ignoreCauses, printPackageInformation);
+        return AbstractExceptions.getStackTraceString(ThrowableWrapperHelper.toThrowableWrapper(throwableProxy), false, false, rootPackages, groupPackages, ignorePackages, maxDepth, ignoreCauses, printPackageInformation, printModuleName, printSuppressedExceptions);
     }
 
 }
