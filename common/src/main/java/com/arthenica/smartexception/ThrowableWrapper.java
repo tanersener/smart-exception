@@ -32,6 +32,8 @@
 
 package com.arthenica.smartexception;
 
+import java.util.*;
+
 public class ThrowableWrapper {
     private final String message;
     private final ThrowableWrapper cause;
@@ -40,15 +42,28 @@ public class ThrowableWrapper {
     private final StackTraceElementWrapper[] stackTrace;
 
     public ThrowableWrapper(final Throwable throwable) {
+        this(throwable, Collections.newSetFromMap(new IdentityHashMap<Throwable, Boolean>()));
+    }
+
+    public ThrowableWrapper(final Throwable throwable, final Set<Throwable> alreadyWrapped) {
+        alreadyWrapped.add(throwable);
+
         message = throwable.getMessage();
-        cause = throwable.getCause() == null ? null : new ThrowableWrapper(throwable.getCause());
+        if (throwable.getCause() != null && !alreadyWrapped.contains(throwable.getCause())) {
+            cause = new ThrowableWrapper(throwable.getCause(), alreadyWrapped);
+        } else {
+            cause = null;
+        }
         className = throwable.getClass().getName();
 
-        final Throwable[] throwableSuppressed = throwable.getSuppressed();
-        suppressed = new ThrowableWrapper[throwableSuppressed.length];
-        for (int i = 0, throwableSuppressedLength = throwableSuppressed.length; i < throwableSuppressedLength; i++) {
-            suppressed[i] = new ThrowableWrapper(throwableSuppressed[i]);
+        final Throwable[] suppressedThrowableArray = throwable.getSuppressed();
+        final List<ThrowableWrapper> tmpList = new LinkedList<>();
+        for (int i = 0, throwableSuppressedLength = suppressedThrowableArray.length; i < throwableSuppressedLength; i++) {
+            if (!alreadyWrapped.contains(suppressedThrowableArray[i])) {
+                tmpList.add(new ThrowableWrapper(suppressedThrowableArray[i], alreadyWrapped));
+            }
         }
+        suppressed = tmpList.toArray(new ThrowableWrapper[0]);
 
         final StackTraceElement[] stackTraceElements = throwable.getStackTrace();
         stackTrace = new StackTraceElementWrapper[stackTraceElements.length];
@@ -79,7 +94,6 @@ public class ThrowableWrapper {
     }
 
     public ThrowableWrapper[] getSuppressed() {
-        //@TODO We do not suppressed throwables yet
         return suppressed;
     }
 

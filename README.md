@@ -1,6 +1,6 @@
-# SmartException ![GitHub release](https://img.shields.io/badge/release-v0.2.0-blue.svg) ![Maven Central](https://img.shields.io/maven-central/v/com.arthenica/smart-exception-java) ![build status](https://github.com/tanersener/smart-exception/actions/workflows/build.yml/badge.svg)
+# SmartException ![GitHub release](https://img.shields.io/badge/release-v0.2.1-blue.svg) ![Maven Central](https://img.shields.io/maven-central/v/com.arthenica/smart-exception-java) ![build status](https://github.com/tanersener/smart-exception/actions/workflows/build.yml/badge.svg)
 
-Utilities to handle throwable objects and format stack trace elements in `Java` applications
+Utilities to handle throwable objects and format stack trace elements in `JVM` based languages (`Java`, `Scala`, `Kotlin`, `Groovy`, etc.)
 
 <img src="https://github.com/tanersener/smart-exception/blob/main/docs/assets/smart-exception-logo-v5.png" width="240" alt="Smart Exception Logo">
 
@@ -16,6 +16,7 @@ Utilities to handle throwable objects and format stack trace elements in `Java` 
   - Create conversion rules to use within pattern layout 
   - Define a `throwableConverter` to format stack traces in `logstash-logback-encoder`  
 - Do not include module name while printing a stack trace element
+- Do not print suppressed exceptions
 - Customise how a stack trace element will be printed
 - Define how native methods and closed source stack trace elements will be printed
 - Search for a cause in an exception chain
@@ -38,7 +39,7 @@ Install `smart-exception` by adding one of the following dependencies to your `b
 
 ```
 dependencies {
-    implementation 'com.arthenica:smart-exception-java9:0.2.0'
+    implementation 'com.arthenica:smart-exception-java9:0.2.1'
 }
 ```
 
@@ -46,7 +47,7 @@ dependencies {
 
 ```
 dependencies {
-    implementation 'com.arthenica:smart-exception-java:0.2.0'
+    implementation 'com.arthenica:smart-exception-java:0.2.1'
 }
 ```
 
@@ -136,7 +137,7 @@ Note that `smart-exception-logback` requires Java 9 or later
 
 ```
 dependencies {
-    implementation 'com.arthenica:smart-exception-logback:0.2.0'
+    implementation 'com.arthenica:smart-exception-logback:0.2.1'
 }
 ```
 
@@ -172,6 +173,7 @@ dependencies {
 
 |                           SmartException Version                           | Release Date |
 |:--------------------------------------------------------------------------:|:------------:|
+| [0.2.1](https://github.com/tanersener/smart-exception/releases/tag/v0.2.1) | May 30, 2022 |
 | [0.2.0](https://github.com/tanersener/smart-exception/releases/tag/v0.2.0) | Mar 13, 2022 |
 | [0.1.1](https://github.com/tanersener/smart-exception/releases/tag/v0.1.1) | Nov 28, 2021 |
 | [0.1.0](https://github.com/tanersener/smart-exception/releases/tag/v0.1.0) | Apr 12, 2020 |

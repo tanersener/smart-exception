@@ -10,7 +10,7 @@ subprojects {
     apply plugin: 'java-library'
 
     group = 'com.arthenica'
-    version = '0.2.0'
+    version = '0.2.1'
 
     task sourcesJar(type: Jar) {
         archiveClassifier.set('sources')
@@ -24,6 +24,25 @@ subprojects {
                     'Implementation-Version': archiveVersion
             )
         }
+    }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        archiveClassifier.set('javadoc')
+        from javadoc.destinationDir
+        manifest {
+            attributes(
+                    'Built-By': System.getProperty('user.name'),
+                    'Build-Timestamp': new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ").format(new Date()),
+                    'Created-By': "Gradle ${gradle.gradleVersion}",
+                    'Build-Jdk': System.getProperty('java.version'),
+                    'Implementation-Version': archiveVersion
+            )
+        }
+    }
+
+    java {
+        withSourcesJar()
+        withJavadocJar()
     }
 
     jar {

@@ -44,13 +44,12 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import javax.management.MBeanException;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.*;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.DigestException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.ConcurrentModificationException;
-import java.util.HashSet;
+import java.util.*;
 import java.util.concurrent.Callable;
 
 public class ExceptionsTest {
@@ -59,6 +58,56 @@ public class ExceptionsTest {
         // TRIM LINE NUMBER - ADDING NEW TEST CASES CAUSES EXISTING TESTS TO FAIL
         // TRIM MODULE NAME - DEPENDING ON THE CLASS LOADER MODULE NAME CAN BE PRINTED OR NOT
         return stackTraceLine.replaceAll(":[0-9]*\\)", "\\)").replaceAll("at .*/", "at ");
+    }
+
+    static String toString(final Throwable throwable) {
+        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        throwable.printStackTrace(new PrintStream(outputStream));
+        return outputStream.toString();
+    }
+
+    static String loadTestResourceAsString(final String resourceName) throws URISyntaxException, IOException {
+        return new String(Files.readAllBytes(Paths.get(Objects.requireNonNull(ExceptionsTest.class.getResource(resourceName)).toURI())));
+    }
+
+    @Test
+    public void getStackTraceOriginal() {
+        Exception level4Exception = new ArrayIndexOutOfBoundsException("Index not valid.");
+        Exception level3Exception = new ConcurrentModificationException(level4Exception);
+        Exception level2Exception = new IllegalStateException(level3Exception);
+        final Exception level1Exception = new MBeanException(level2Exception);
+
+        try {
+            Callable<String> stringCallable = new Callable<String>() {
+                @Override
+                public String call() throws Exception {
+                    throw level1Exception;
+                }
+            };
+            stringCallable.call();
+        } catch (Exception e) {
+            String expectedStackTrace = toString(e).replaceAll("java.base/", "");
+            String stackTraceString = Exceptions.getStackTraceString(e, true);
+            Assert.assertTrue(expectedStackTrace.startsWith(stackTraceString));
+        }
+    }
+
+    @Test
+    public void getStackTraceSuppressed() throws URISyntaxException, IOException {
+        final Throwable throwable = generateSuppressedException(false);
+
+        String expectedStackTrace = loadTestResourceAsString("/suppressed.txt");
+        String stackTraceString = Exceptions.getStackTraceString(throwable).replaceAll("java.base/", "");
+        Assert.assertEquals(expectedStackTrace, stackTraceString);
+    }
+
+    @Test
+    public void getStackTraceSuppressedCircular() throws URISyntaxException, IOException {
+        final Throwable throwable = generateSuppressedException(true);
+
+        String expectedStackTrace = loadTestResourceAsString("/suppressedCircular.txt");
+        String stackTraceString = Exceptions.getStackTraceString(throwable).replaceAll("java.base/", "");
+        Assert.assertTrue(expectedStackTrace.startsWith(stackTraceString));
     }
 
     @Test
@@ -455,6 +504,32 @@ public class ExceptionsTest {
             Assert.assertEquals("jackson-databind-2.10.5.1.jar", libraryName(stackTraceElement));
             Assert.assertEquals("2.10.5.1", version(stackTraceElement));
         }
+    }
+
+    Throwable generateSuppressedException(final boolean circular) {
+        InputStream stream = null;
+        Throwable throwable = null;
+        Throwable returnThrowable = null;
+        try {
+            stream = Files.newInputStream(Paths.get("NotExistingFile.txt"));
+        } catch (IOException e) {
+            throwable = new RuntimeException(new IOException(e));
+        } finally {
+            try {
+                Objects.requireNonNull(stream).close();
+            } catch (NullPointerException e) {
+                if (throwable != null) {
+                    throwable.addSuppressed(new IllegalArgumentException(e));
+                    if (circular) {
+                        e.addSuppressed(throwable);
+                    }
+                }
+                returnThrowable = throwable;
+            } catch (IOException ignored) {
+            }
+        }
+
+        return returnThrowable;
     }
 
     String libraryName(final StackTraceElement stackTraceElement) {

@@ -174,6 +174,24 @@ public class Exceptions {
     }
 
     /**
+     * <p>Returns the value of print suppressed exceptions option.
+     *
+     * @return the value of global print suppressed exceptions option
+     */
+    public static boolean getPrintSuppressedExceptions() {
+        return AbstractExceptions.getPrintSuppressedExceptions();
+    }
+
+    /**
+     * <p>Sets the value of print suppressed exceptions option.
+     *
+     * @param printSuppressedExceptions new global print suppressed exceptions option
+     */
+    public static void setPrintSuppressedExceptions(final boolean printSuppressedExceptions) {
+        AbstractExceptions.setPrintSuppressedExceptions(printSuppressedExceptions);
+    }
+
+    /**
      * <p>Returns the smart stack trace for the given <code>throwable</code>.
      *
      * <p>This method uses root packages registered by {@link #registerRootPackage(String)}, group packages registered
@@ -245,6 +263,22 @@ public class Exceptions {
     }
 
     /**
+     * <p>Returns the smart stack trace for the given <code>throwable</code> using packages provided.
+     *
+     * @param throwable                 parent throwable
+     * @param rootPackageSet            root packages to use for building the stack trace
+     * @param groupPackageSet           group packages to use for building the stack trace
+     * @param ignorePackageSet          ignore packages to use for building the stack trace
+     * @param ignoreAllCauses           ignore all causes in the exception chain
+     * @param printPackageInformation   print package information
+     * @param printSuppressedExceptions print suppressed exceptions
+     * @return a string containing the smart stack trace for the given <code>throwable</code>
+     */
+    public static String getStackTraceString(final Throwable throwable, final Set<String> rootPackageSet, final Set<String> groupPackageSet, final Set<String> ignorePackageSet, final boolean ignoreAllCauses, final boolean printPackageInformation, final boolean printSuppressedExceptions) {
+        return AbstractExceptions.getStackTraceString(new ThrowableWrapper(throwable), rootPackageSet, groupPackageSet, ignorePackageSet, ignoreAllCauses, printPackageInformation, printSuppressedExceptions);
+    }
+
+    /**
      * <p>Returns the smart stack trace for the given <code>throwable</code> using root package provided.
      *
      * @param throwable   parent throwable
@@ -301,6 +335,20 @@ public class Exceptions {
      */
     public static String getStackTraceString(final Throwable throwable, final int maxDepth, final boolean ignoreAllCauses, final boolean printPackageInformation) {
         return AbstractExceptions.getStackTraceString(new ThrowableWrapper(throwable), maxDepth, ignoreAllCauses, printPackageInformation);
+    }
+
+    /**
+     * <p>Returns the smart stack trace for the given <code>throwable</code> using elements found until the maxDepth.
+     *
+     * @param throwable                 parent throwable
+     * @param maxDepth                  max depth in exception chain that will be used
+     * @param ignoreAllCauses           ignore all causes in the exception chain
+     * @param printPackageInformation   print package information
+     * @param printSuppressedExceptions print suppressed exceptions
+     * @return a string containing the smart stack trace for the given <code>throwable</code>
+     */
+    public static String getStackTraceString(final Throwable throwable, final int maxDepth, final boolean ignoreAllCauses, final boolean printPackageInformation, final boolean printSuppressedExceptions) {
+        return AbstractExceptions.getStackTraceString(new ThrowableWrapper(throwable), maxDepth, ignoreAllCauses, printPackageInformation, printSuppressedExceptions);
     }
 
     /**
