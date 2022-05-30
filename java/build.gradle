@@ -1,24 +1,8 @@
-import java.text.SimpleDateFormat
-
 sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7
 
 dependencies {
     api project(":smart-exception-common")
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    archiveClassifier.set('javadoc')
-    from javadoc.destinationDir
-    manifest {
-        attributes(
-                'Built-By': System.getProperty('user.name'),
-                'Build-Timestamp': new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ").format(new Date()),
-                'Created-By': "Gradle ${gradle.gradleVersion}",
-                'Build-Jdk': System.getProperty('java.version'),
-                'Implementation-Version': archiveVersion
-        )
-    }
 }
 
 artifacts {
@@ -68,15 +52,15 @@ if (project.hasProperty('release')) {
                     }
                     developers {
                         developer {
-                            id developerId
-                            name developerName
-                            email developerEmail
+                            id = developerId
+                            name = developerName
+                            email = developerEmail
                         }
                     }
                     scm {
-                        connection gitUrl
-                        developerConnection gitUrl
-                        url siteUrl
+                        connection = gitUrl
+                        developerConnection = gitUrl
+                        url = siteUrl
                     }
                 }
             }
